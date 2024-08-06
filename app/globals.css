@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@font-face {
+  font-family: Nohemi;
+  src: url(/fonts/Nohemi-Thin.ttf);
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap
+}
+@font-face {
+  font-family: Nohemi;
+  src: url(/fonts/Nohemi-ExtraLight.ttf);
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap
+}
+@font-face {
+  font-family: Nohemi;
+  src: url(/fonts/Nohemi-Light.ttf);
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap
+}
+@font-face {
+  font-family: Nohemi;
+  src: url(/fonts/Nohemi-Regular.ttf);
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap
+}
+@font-face {
+  font-family: Nohemi;
+  src: url(/fonts/Nohemi-Medium.ttf);
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap
+}
+@font-face {
+  font-family: Nohemi;
+  src: url(/fonts/Nohemi-SemiBold.ttf);
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap
+}
+@font-face {
+  font-family: Nohemi;
+  src: url(/fonts/Nohemi-Bold.ttf);
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap
+}
+@font-face {
+  font-family: Nohemi;
+  src: url(/fonts/Nohemi-ExtraBold.ttf);
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap
+}
+@font-face {
+  font-family: Nohemi;
+  src: url(/fonts/Nohemi-Black.ttf);
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+html {
+  font-family: Nohemi, sans-serif;
+}
+
+body {
+  background-color: black;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+
+
+.MuiDialog-paper{
+  width: 100% !important;
+  max-width: 500px !important;
+  margin: 0 !important;
+  margin-top: auto !important;
+  margin-bottom: 0px !important;
+  background-color: white !important;
+  border-top-left-radius: 24px !important;
+  border-top-right-radius: 24px !important;
+}
+
+.MuiDialogContent-root {
+  padding: 20px !important;
+  padding-top: 50px !important;
+}
+
+.MuiDialog-paper * {
+  font-family: Nohemi, sans-serif !important;
+}
+
+body {
+  max-width: 500px;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100vh;
+}
+
+#__next {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+}
+
+.text-base, .text-xs {
+  line-height: 1.5;
+  letter-spacing: -.03em;
+}
+
+#ton-connect-button button {
+  background-color: #048DFF !important;
+}
+
+#ton-connect-button button *{
+  font-family: Nohemi,system-ui,sans-serif !important;
+}
+
+.coingroup:active >div:first-of-type{
+  transform: scale(1.05) rotateY(45deg) !important;
+}
+
+.gradient-text {
+  /* -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  background-image: linear-gradient(90deg, #0075FF, #86BEFF); */
+  color: #86BEFF;
+}
+
+@keyframes example1 {
+  0% {
+    transform: scale(1);
+    opacity:1;
+  }
+  100% {
+    transform: scale(5);
+    opacity:0;
+  }
+}
+
+@keyframes tapper {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.tapper {
+  animation-name: tapper;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+.pulse {
+  animation-name: example1;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+
+button {
+  font-weight: 700;
+  font-family: Inter, sans-serif;
+}
