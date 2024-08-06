@@ -130,10 +130,10 @@ export default function Index() {
             }
 
             @keyframes example {
-              0%   {opacity: 1; left :${mousePosition.x - 700 + "px"}; top:${
+              0%   {opacity: 1; left :${mousePosition.x - 250 + "px"}; top:${
             mousePosition.y + "px"
           };}
-              100% {opacity: 0; left: ${mousePosition.x - 700 + "px"}; top:${
+              100% {opacity: 0; left: ${mousePosition.x - 250 + "px"}; top:${
             mousePosition.y - 200 + "px"
           };}
             }
@@ -188,13 +188,14 @@ export default function Index() {
                 {getLevelInfo().number}/10
               </div>
             </div>
+
             <div className="z-[2] relative overflow-hidden min-h-3 rounded-full bg-[#D9D9D9] font-bold mt-2">
               <div
                 className="h-full rounded-full transition-transform !duration-500 bg-main"
                 style={{
                   transform: `translateX(-${
-                    100 - ((count % 200000) / 200000) * 100
-                  }%)`,
+                    100 - ((count % 20) / 20) * 100
+                  }%)`
                 }}
               ></div>
             </div>
@@ -217,7 +218,7 @@ export default function Index() {
               </span>
               <img src="/images/pajamas_information-o.png" alt="" />
             </div>
-            <div className={`flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px] ml-auto ${tap === 5 ? 'block' : 'hidden'}`}>
+            <div className={`flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px] ml-auto ${tap > 4 ? 'block' : 'hidden'}`}>
               <img src="/images/redbird-small.svg" alt="" />
               <span className="text-[#E3310B]">Game Go</span>
             </div>
