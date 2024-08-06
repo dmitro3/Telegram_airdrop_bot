@@ -15,6 +15,7 @@ export default function Index() {
   const user = useSelector((x: any) => x.TaskReducer.user);
   const [count, setCount] = useState<number>(0);
   const [mount, setMount] = useState<number>(1000);
+  const [tap, settap] = useState<number>(1);
   const [showAnimation, setShowAnimation] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [pulses, setPulses] = useState([]);
@@ -40,27 +41,27 @@ export default function Index() {
     }, 500);
   };
   const getLevelInfo = () => {
-    switch (Math.floor(count / 200000)) {
+    switch (Math.floor(count / 20)) {
       case 0:
-        return { text: "Bronze", number: 1 };
+        return { text: "Rookie", number: 1 , image:"/images/lvl-1-rookie.png"};
       case 1:
-        return { text: "Silver", number: 2 };
+        return { text: "Bronze", number: 2 , image:"/images/lvl-2-bronze.png"};
       case 2:
-        return { text: "Platinum", number: 3 };
+        return { text: "Silver", number: 3 , image:"/images/lvl-3-silver.png"};
       case 3:
-        return { text: "Diamond", number: 4 };
+        return { text: "Gold", number: 4 , image:"/images/lvl-4-gold.png"};
       case 4:
-        return { text: "Master", number: 5 };
+        return { text: "Platinum", number: 5 , image:"/images/lvl-5-platinum.png"};
       case 5:
-        return { text: "Grandmaster", number: 6 };
+        return { text: "Diamond", number: 6 , image:"/images/lvl-6-diamond.png"};
       case 6:
-        return { text: "Elite", number: 7 };
+        return { text: "Master", number: 7 , image:"/images/lvl-7-master.png"};
       case 7:
-        return { text: "Legendary", number: 8 };
+        return { text: "Grand Master", number: 8 , image:"/images/lvl-8-grand-master.png"};
       case 8:
-        return { text: "Mythic", number: 9 };
+        return { text: "Lord", number: 9 , image:"/images/lvl-9-lord.png"};
       default:
-        return { text: "Mythic", number: 9 };
+        return { text: "Legendary", number: 10 , image:"/images/lvl-10-legendary.png"};
     }
   };
   const handleIncrement = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -69,19 +70,19 @@ export default function Index() {
     setPulses(payload);
     // const { clientX, clientY } = event
     const { userAgent } = window.navigator;
-    if (!user || !userAgent.includes("Mobi")) return;
+    // if (!user || !userAgent.includes("Mobi")) return;
     const { clientX, clientY } = event;
     console.log("Mouse X: ", clientX, "Mouse Y: ", clientY);
     setMousePosition({ x: clientX, y: clientY });
-    const newCount = count + 1;
+    const newCount = count + tap;
     setCount(newCount);
-    setMount(mount - 1);
+    setMount(mount - tap);
     if (!showAnimation) handleChange();
-    try {
-      updateItem(user, newCount); // Use the correct item ID here
-    } catch (error) {
-      console.error("Failed to update item", error);
-    }
+    // try {
+    //   updateItem(user, newCount); // Use the correct item ID here
+    // } catch (error) {
+    //   console.error("Failed to update item", error);
+    // }
   };
   useEffect(() => {
     if (mount < 1000) {
@@ -113,6 +114,9 @@ export default function Index() {
     };
     // fetchData();
   }, [user]);
+  useEffect(() => {
+    settap(getLevelInfo().number); // Increase the tap value based on the level number
+  }, [count]);
   return (
     <>
       <div>
@@ -126,10 +130,10 @@ export default function Index() {
             }
 
             @keyframes example {
-              0%   {opacity: 1; left :${mousePosition.x - 25 + "px"}; top:${
+              0%   {opacity: 1; left :${mousePosition.x - 700 + "px"}; top:${
             mousePosition.y + "px"
           };}
-              100% {opacity: 0; left: ${mousePosition.x - 25 + "px"}; top:${
+              100% {opacity: 0; left: ${mousePosition.x - 700 + "px"}; top:${
             mousePosition.y - 200 + "px"
           };}
             }
@@ -145,7 +149,7 @@ export default function Index() {
               </p>
               <div className="flex gap-1">
                 <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                <p className="text-lg font-semibold">+1</p>
+                <p className="text-lg font-semibold">+{tap.toLocaleString()}</p>
               </div>
             </div>
             <div className="bg-gradient-to-b from-[#FFFFFF] to-[#F2F2F2] shadow-[0px_4px_0px_0px_#CACACA] rounded-[10px] w-full flex flex-col items-center p-[10px]">
@@ -170,17 +174,18 @@ export default function Index() {
           <div className="flex justify-center items-center gap-[6px]">
             <img src="/images/coin.png" alt="" />
             <p className="bg-gradient-to-b from-[#FED953] to-[#FFC700] text-transparent bg-clip-text stroke-1 stroke-[#CF6100] font-extrabold text-5xl">
-              3,214
+              {count.toLocaleString()}
             </p>
           </div>
           <div>
             <div className="flex text-white items-center relative z-[2] font-bold">
-              <div className="font-semibold text-[14px] text-black">
-                {getLevelInfo().text}
+              <div className="font-semibold text-[14px] text-black flex">
+                <img src={getLevelInfo().image} className="w-8 h-8" alt="" />
+                <span className="flex justify-center items-center ml-1">{getLevelInfo().text}</span>
               </div>
               <div className="ml-auto font-semibold text-[14px] text-main">
                 <span className="text-[12px] text-black mr-1.5">Level</span>
-                {getLevelInfo().number}/9
+                {getLevelInfo().number}/10
               </div>
             </div>
             <div className="z-[2] relative overflow-hidden min-h-3 rounded-full bg-[#D9D9D9] font-bold mt-2">
@@ -199,12 +204,10 @@ export default function Index() {
               Tap to collect
             </p>
           </div>
-          <div className="flex justify-center mt-[-50px]">
-            <img
-              src="/images/egg-full.png"
-              className="w-[390px] h-[390px]"
-              alt=""
-            />
+          <div className="flex justify-center mt-[-50px]" onClick={handleIncrement}>
+            <img src="/images/egg-full.png" className={`w-[390px] h-[390px] ${tap > 2 ? 'hidden' : ''}`} alt="" />
+            <img src="/images/egg-bitbroken.png" className={`w-[390px] h-[390px] ${tap > 4 || tap < 3 ? 'hidden' : ''}`} alt="" />
+            <img src="/images/redbird.png" className={`w-[390px] h-[390px] ${tap < 5 ? 'hidden' : ''}`} alt="" />
           </div>
           <div className="flex font-bold text-[18px] text-black mt-[-50px]">
             <div className="flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px]">
@@ -214,6 +217,10 @@ export default function Index() {
               </span>
               <img src="/images/pajamas_information-o.png" alt="" />
             </div>
+            <div className={`flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px] ml-auto ${tap === 5 ? 'block' : 'hidden'}`}>
+              <img src="/images/redbird-small.svg" alt="" />
+              <span className="text-[#E3310B]">Game Go</span>
+            </div>
             {/* <div className="flex items-center space-x-2 ml-auto">
               <img src="/images/boost.svg" />
               <span>Boost</span>
@@ -221,7 +228,15 @@ export default function Index() {
           </div>
         </div>
       </div>
+      {pulses.map((pulse, index) => (
+        <img
+          key={index}
+          className="absolute w-[50px] h-[50px] animation z-20"
+          src="/images/coin.png"
+          alt=""
+        />
+      ))}
     </>
   );
 }
-0;
+
