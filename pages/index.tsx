@@ -188,10 +188,10 @@ const Index: React.FC<IndexProps> = ({ data }) => {
             }
 
             @keyframes example {
-              0%   {opacity: 1; left :${mousePosition.x - 250 + "px"}; top:${
+              0%   {opacity: 1; left :${mousePosition.x + "px"}; top:${
             mousePosition.y + "px"
           };}
-              100% {opacity: 0; left: ${mousePosition.x - 250 + "px"}; top:${
+              100% {opacity: 0; left: ${mousePosition.x + "px"}; top:${
             mousePosition.y - 200 + "px"
           };}
             }
