@@ -231,7 +231,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
           </div>
           <div className="flex justify-center items-center gap-[6px]">
             <img src="/images/coin.png" alt="" />
-            <p className="text-[#FFC700] text-transparent bg-clip-text stroke-1 stroke-[#CF6100] font-extrabold text-5xl">
+            <p className="text-[#FFC700] font-extrabold text-5xl">
               {count}
             </p>
           </div>
