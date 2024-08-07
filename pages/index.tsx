@@ -133,7 +133,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
     if (mount < 1000) {
       const intervalId = setInterval(() => {
         setMount((prevMount) => Math.min(prevMount + 1, 1000)); // Ensure mount doesn't exceed 1000
-      }, 150); // Adjust the interval as needed
+      }, 250); // Adjust the interval as needed
 
       return () => clearInterval(intervalId); // Clean up the interval on unmount
     }
