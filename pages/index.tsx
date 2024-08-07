@@ -1,26 +1,52 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import axios from "@/app/axios";
 import { updateItem } from "../app/lib/api";
-import Lottie from "react-lottie";
 import * as idleAnim from "../app/animations/Ghost_Idle.json";
 import * as eatAnim from "../app/animations/Ghost_Eat.json";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/reducers/TaskReducer";
+import fs from 'fs';
+import path from 'path';
+import { Games } from "@mui/icons-material";
 
-export default function Index() {
+interface Game {
+  level: number;
+  name: string;
+  mount: number;
+}
+
+interface Data {
+  games: Game[]
+}
+
+interface IndexProps {
+  data: Data;
+}
+
+const Index: React.FC<IndexProps> = ({ data }) => {
   const dispatch = useDispatch();
   const user = useSelector((x: any) => x.TaskReducer.user);
   const [count, setCount] = useState<number>(0);
+  const [profit, setprofit] = useState<number>(1);
+  const [Games, setGames] = useState<Game[]>(data.games);
   const [mount, setMount] = useState<number>(1000);
+  const [lvlcoin, setlvlcoin] = useState<number>(5000);
   const [tap, settap] = useState<number>(1);
+  const [alert, setalert] = useState<number>(0);
   const [showAnimation, setShowAnimation] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [pulses, setPulses] = useState([]);
   const router = useRouter();
   const userFromQuery = router.query.user?.toString() || "";
+  
+  const getMountBylevel = (level: number): number | number => {
+    const item = Games.find((item: Game) => item.level === level);
+    return item ? item.mount : 0;
+  };
 
   const defaultOption = {
     loop: true,
@@ -41,27 +67,43 @@ export default function Index() {
     }, 500);
   };
   const getLevelInfo = () => {
-    switch (Math.floor(count / 20)) {
+    switch (Math.floor(count / lvlcoin)) {
       case 0:
-        return { text: "Rookie", number: 1 , image:"/images/lvl-1-rookie.png"};
+        return { text: "Rookie", number: 1, image: "/images/lvl-1-rookie.png" };
       case 1:
-        return { text: "Bronze", number: 2 , image:"/images/lvl-2-bronze.png"};
+        return { text: "Bronze", number: 2, image: "/images/lvl-2-bronze.png" };
       case 2:
-        return { text: "Silver", number: 3 , image:"/images/lvl-3-silver.png"};
+        return { text: "Silver", number: 3, image: "/images/lvl-3-silver.png" };
       case 3:
-        return { text: "Gold", number: 4 , image:"/images/lvl-4-gold.png"};
+        return { text: "Gold", number: 4, image: "/images/lvl-4-gold.png" };
       case 4:
-        return { text: "Platinum", number: 5 , image:"/images/lvl-5-platinum.png"};
+        return {
+          text: "Platinum",
+          number: 5,
+          image: "/images/lvl-5-platinum.png",
+        };
       case 5:
-        return { text: "Diamond", number: 6 , image:"/images/lvl-6-diamond.png"};
+        return {
+          text: "Diamond",
+          number: 6,
+          image: "/images/lvl-6-diamond.png",
+        };
       case 6:
-        return { text: "Master", number: 7 , image:"/images/lvl-7-master.png"};
+        return { text: "Master", number: 7, image: "/images/lvl-7-master.png" };
       case 7:
-        return { text: "Grand Master", number: 8 , image:"/images/lvl-8-grand-master.png"};
+        return {
+          text: "Grand Master",
+          number: 8,
+          image: "/images/lvl-8-grand-master.png",
+        };
       case 8:
-        return { text: "Lord", number: 9 , image:"/images/lvl-9-lord.png"};
+        return { text: "Lord", number: 9, image: "/images/lvl-9-lord.png" };
       default:
-        return { text: "Legendary", number: 10 , image:"/images/lvl-10-legendary.png"};
+        return {
+          text: "Legendary",
+          number: 10,
+          image: "/images/lvl-10-legendary.png",
+        };
     }
   };
   const handleIncrement = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -74,6 +116,9 @@ export default function Index() {
     const { clientX, clientY } = event;
     console.log("Mouse X: ", clientX, "Mouse Y: ", clientY);
     setMousePosition({ x: clientX, y: clientY });
+    setalert(0);
+    if (mount < tap) return;
+    setalert(1);
     const newCount = count + tap;
     setCount(newCount);
     setMount(mount - tap);
@@ -88,11 +133,19 @@ export default function Index() {
     if (mount < 1000) {
       const intervalId = setInterval(() => {
         setMount((prevMount) => Math.min(prevMount + 1, 1000)); // Ensure mount doesn't exceed 1000
-      }, 1500); // Adjust the interval as needed
+      }, 150); // Adjust the interval as needed
 
       return () => clearInterval(intervalId); // Clean up the interval on unmount
     }
   }, [mount]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCount((prevCount) => (prevCount + profit));
+    }, 60000); // Adjust the interval as needed
+
+    return () => clearInterval(intervalId); // Clean up the interval on unmount
+  })
 
   useEffect(() => {
     if (userFromQuery) {
@@ -117,6 +170,11 @@ export default function Index() {
   useEffect(() => {
     settap(getLevelInfo().number); // Increase the tap value based on the level number
   }, [count]);
+
+  useEffect(() => {
+    const mountValue = getMountBylevel(tap);
+    setlvlcoin(mountValue);
+  }, [tap])
   return (
     <>
       <div>
@@ -149,7 +207,7 @@ export default function Index() {
               </p>
               <div className="flex gap-1">
                 <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                <p className="text-lg font-semibold">+{tap.toLocaleString()}</p>
+                <p className="text-lg font-semibold">+{tap}</p>
               </div>
             </div>
             <div className="bg-gradient-to-b from-[#FFFFFF] to-[#F2F2F2] shadow-[0px_4px_0px_0px_#CACACA] rounded-[10px] w-full flex flex-col items-center p-[10px]">
@@ -158,7 +216,7 @@ export default function Index() {
               </p>
               <div className="flex gap-1">
                 <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                <p className="text-lg font-semibold">5000</p>
+                <p className="text-lg font-semibold">{lvlcoin}</p>
               </div>
             </div>
             <div className="bg-gradient-to-b from-[#FFFFFF] to-[#F2F2F2] shadow-[0px_4px_0px_0px_#CACACA] rounded-[10px] w-full flex flex-col items-center p-[10px]">
@@ -167,21 +225,23 @@ export default function Index() {
               </p>
               <div className="flex gap-1">
                 <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                <p className="text-lg font-semibold">+1</p>
+                <p className="text-lg font-semibold">+{profit}</p>
               </div>
             </div>
           </div>
           <div className="flex justify-center items-center gap-[6px]">
             <img src="/images/coin.png" alt="" />
             <p className="bg-gradient-to-b from-[#FED953] to-[#FFC700] text-transparent bg-clip-text stroke-1 stroke-[#CF6100] font-extrabold text-5xl">
-              {count.toLocaleString()}
+              {count}
             </p>
           </div>
           <div>
             <div className="flex text-white items-center relative z-[2] font-bold">
               <div className="font-semibold text-[14px] text-black flex">
                 <img src={getLevelInfo().image} className="w-8 h-8" alt="" />
-                <span className="flex justify-center items-center ml-1">{getLevelInfo().text}</span>
+                <span className="flex justify-center items-center ml-1">
+                  {getLevelInfo().text}
+                </span>
               </div>
               <div className="ml-auto font-semibold text-[14px] text-main">
                 <span className="text-[12px] text-black mr-1.5">Level</span>
@@ -191,11 +251,9 @@ export default function Index() {
 
             <div className="z-[2] relative overflow-hidden min-h-3 rounded-full bg-[#D9D9D9] font-bold mt-2">
               <div
-                className="h-full rounded-full transition-transform !duration-500 bg-main"
+                className="h-3 rounded-full transition-transform !duration-500 bg-main"
                 style={{
-                  transform: `translateX(-${
-                    100 - ((count % 20) / 20) * 100
-                  }%)`
+                  transform: `translateX(-${100 - ((count % lvlcoin) / lvlcoin) * 100}%)`,
                 }}
               ></div>
             </div>
@@ -205,10 +263,27 @@ export default function Index() {
               Tap to collect
             </p>
           </div>
-          <div className="flex justify-center mt-[-50px]" onClick={handleIncrement}>
-            <img src="/images/egg-full.png" className={`w-[390px] h-[390px] ${tap > 2 ? 'hidden' : ''}`} alt="" />
-            <img src="/images/egg-bitbroken.png" className={`w-[390px] h-[390px] ${tap > 4 || tap < 3 ? 'hidden' : ''}`} alt="" />
-            <img src="/images/redbird.png" className={`w-[390px] h-[390px] ${tap < 5 ? 'hidden' : ''}`} alt="" />
+          <div
+            className="flex justify-center mt-[-50px]"
+            onClick={handleIncrement}
+          >
+            <img
+              src="/images/egg-full.png"
+              className={`w-[390px] h-[390px] ${tap > 2 ? "hidden" : ""}`}
+              alt=""
+            />
+            <img
+              src="/images/egg-bitbroken.png"
+              className={`w-[390px] h-[390px] ${
+                tap > 4 || tap < 3 ? "hidden" : ""
+              }`}
+              alt=""
+            />
+            <img
+              src="/images/redbird.png"
+              className={`w-[390px] h-[390px] ${tap < 5 ? "hidden" : ""}`}
+              alt=""
+            />
           </div>
           <div className="flex font-bold text-[18px] text-black mt-[-50px]">
             <div className="flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px]">
@@ -218,7 +293,11 @@ export default function Index() {
               </span>
               <img src="/images/pajamas_information-o.png" alt="" />
             </div>
-            <div className={`flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px] ml-auto ${tap > 4 ? 'block' : 'hidden'}`}>
+            <div
+              className={`flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px] ml-auto ${
+                tap > 4 ? "block" : "hidden"
+              }`}
+            >
               <img src="/images/redbird-small.svg" alt="" />
               <span className="text-[#E3310B]">Game Go</span>
             </div>
@@ -229,15 +308,30 @@ export default function Index() {
           </div>
         </div>
       </div>
-      {pulses.map((pulse, index) => (
-        <img
-          key={index}
-          className="absolute w-[50px] h-[50px] animation z-20"
-          src="/images/coin.png"
-          alt=""
-        />
-      ))}
+      {alert === 1 &&
+        pulses.map((pulse, index) => (
+          <img
+            key={index}
+            className="absolute w-[50px] h-[50px] animation z-20"
+            src="/images/coin.png"
+            alt=""
+          />
+        ))}
     </>
   );
 }
 
+
+export const getStaticProps: GetStaticProps = async () => {
+  const filePath = path.join(process.cwd(), 'public', 'data.json');
+  const jsonData = fs.readFileSync(filePath, 'utf-8');
+  const data: Data = JSON.parse(jsonData);
+
+  return {
+    props: {
+      data,
+    },
+  };
+};
+
+export default Index;
