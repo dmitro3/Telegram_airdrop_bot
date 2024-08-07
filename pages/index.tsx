@@ -9,8 +9,8 @@ import * as idleAnim from "../app/animations/Ghost_Idle.json";
 import * as eatAnim from "../app/animations/Ghost_Eat.json";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/reducers/TaskReducer";
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 import { Games } from "@mui/icons-material";
 
 interface Game {
@@ -20,7 +20,7 @@ interface Game {
 }
 
 interface Data {
-  games: Game[]
+  games: Game[];
 }
 
 interface IndexProps {
@@ -42,7 +42,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
   const [pulses, setPulses] = useState([]);
   const router = useRouter();
   const userFromQuery = router.query.user?.toString() || "";
-  
+
   const getMountBylevel = (level: number): number | number => {
     const item = Games.find((item: Game) => item.level === level);
     return item ? item.mount : 0;
@@ -107,7 +107,6 @@ const Index: React.FC<IndexProps> = ({ data }) => {
     }
   };
   const handleIncrement = (event: React.MouseEvent<HTMLDivElement>) => {
-    
     let payload: any = [...pulses];
     payload.push(0);
     setPulses(payload);
@@ -142,11 +141,11 @@ const Index: React.FC<IndexProps> = ({ data }) => {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setCount((prevCount) => (prevCount + profit));
+      setCount((prevCount) => prevCount + profit);
     }, 60000); // Adjust the interval as needed
 
     return () => clearInterval(intervalId); // Clean up the interval on unmount
-  })
+  });
 
   useEffect(() => {
     if (userFromQuery) {
@@ -175,7 +174,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
   useEffect(() => {
     const mountValue = getMountBylevel(tap);
     setlvlcoin(mountValue);
-  }, [tap])
+  }, [tap]);
   return (
     <>
       <div>
@@ -189,10 +188,10 @@ const Index: React.FC<IndexProps> = ({ data }) => {
             }
 
             @keyframes example {
-              0%   {opacity: 1; left :${mousePosition.x + "px"}; top:${
+              0%   {opacity: 1; left :${mousePosition.x - 25 + "px"}; top:${
             mousePosition.y + "px"
           };}
-              100% {opacity: 0; left: ${mousePosition.x + "px"}; top:${
+              100% {opacity: 0; left: ${mousePosition.x - 25 + "px"}; top:${
             mousePosition.y - 200 + "px"
           };}
             }
@@ -254,7 +253,9 @@ const Index: React.FC<IndexProps> = ({ data }) => {
               <div
                 className="h-3 rounded-full transition-transform !duration-500 bg-main"
                 style={{
-                  transform: `translateX(-${100 - ((count % lvlcoin) / lvlcoin) * 100}%)`,
+                  transform: `translateX(-${
+                    100 - ((count % lvlcoin) / lvlcoin) * 100
+                  }%)`,
                 }}
               ></div>
             </div>
@@ -285,6 +286,23 @@ const Index: React.FC<IndexProps> = ({ data }) => {
               className={`w-[390px] h-[390px] ${tap < 5 ? "hidden" : ""}`}
               alt=""
             />
+            {alert === 1 && pulses.map((x: any, i: number) => (
+              <div
+                className={`animation font-medium text-[50px] text-[black] pointer-events-none select-none translate-x-1/2"`}
+                style={{
+                  position: "fixed",
+                  left: mousePosition.x + "px",
+                  top: mousePosition.y + "px",
+                }}
+                key={i}
+              >
+                <img
+                  className="w-[50px] h-[50px]"
+                  src="/images/coin.png"
+                  alt=""
+                />
+              </div>
+            ))}
           </div>
           <div className="flex font-bold text-[18px] text-black mt-[-50px]">
             <div className="flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px]">
@@ -309,23 +327,14 @@ const Index: React.FC<IndexProps> = ({ data }) => {
           </div>
         </div>
       </div>
-      {alert === 1 &&
-        pulses.map((pulse, index) => (
-          <img
-            key={index}
-            className="absolute w-[50px] h-[50px] animation z-20"
-            src="/images/coin.png"
-            alt=""
-          />
-        ))}
+      
     </>
   );
-}
-
+};
 
 export const getStaticProps: GetStaticProps = async () => {
-  const filePath = path.join(process.cwd(), 'public', 'data.json');
-  const jsonData = fs.readFileSync(filePath, 'utf-8');
+  const filePath = path.join(process.cwd(), "public", "data.json");
+  const jsonData = fs.readFileSync(filePath, "utf-8");
   const data: Data = JSON.parse(jsonData);
 
   return {
