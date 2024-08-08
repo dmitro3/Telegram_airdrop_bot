@@ -67,43 +67,27 @@ const Index: React.FC<IndexProps> = ({ data }) => {
     }, 500);
   };
   const getLevelInfo = () => {
-    switch (Math.floor(count / lvlcoin)) {
-      case 0:
-        return { text: "Rookie", number: 1, image: "/images/lvl-1-rookie.png" };
-      case 1:
-        return { text: "Bronze", number: 2, image: "/images/lvl-2-bronze.png" };
-      case 2:
-        return { text: "Silver", number: 3, image: "/images/lvl-3-silver.png" };
-      case 3:
-        return { text: "Gold", number: 4, image: "/images/lvl-4-gold.png" };
-      case 4:
-        return {
-          text: "Platinum",
-          number: 5,
-          image: "/images/lvl-5-platinum.png",
-        };
-      case 5:
-        return {
-          text: "Diamond",
-          number: 6,
-          image: "/images/lvl-6-diamond.png",
-        };
-      case 6:
-        return { text: "Master", number: 7, image: "/images/lvl-7-master.png" };
-      case 7:
-        return {
-          text: "Grand Master",
-          number: 8,
-          image: "/images/lvl-8-grand-master.png",
-        };
-      case 8:
+    switch (true) {
+      case count >= 1000000000:
+        return { text: "Legendary", number: 10, image: "/images/lvl-10-legendary.png" };
+      case count >= 100000000:
         return { text: "Lord", number: 9, image: "/images/lvl-9-lord.png" };
+      case count >= 50000000:
+        return { text: "Grand Master", number: 8, image: "/images/lvl-8-grand-master.png" };
+      case count >= 10000000:
+        return { text: "Master", number: 7, image: "/images/lvl-7-master.png" };
+      case count >= 2000000:
+        return { text: "Diamond", number: 6, image: "/images/lvl-6-diamond.png" };
+      case count >= 1000000:
+        return { text: "Platinum", number: 5, image: "/images/lvl-5-platinum.png" };
+      case count >= 100000:
+        return { text: "Gold", number: 4, image: "/images/lvl-4-gold.png" };
+      case count >= 25000:
+        return { text: "Silver", number: 3, image: "/images/lvl-3-silver.png" };
+      case count >= 5000:
+        return { text: "Bronze", number: 2, image: "/images/lvl-2-bronze.png" };
       default:
-        return {
-          text: "Legendary",
-          number: 10,
-          image: "/images/lvl-10-legendary.png",
-        };
+        return { text: "Rookie", number: 1, image: "/images/lvl-1-rookie.png" };
     }
   };
   const handleIncrement = (event: React.MouseEvent<HTMLDivElement>) => {
