@@ -6,7 +6,7 @@ import useMediaQuery from "./useMediaQuery";
 import { useImmer } from "use-immer";
 import { TargetAndTransition } from "framer-motion";
 import useElementSize from "./useElementSize";
-import { WritableDraft } from "immer/dist/internal";
+import { WritableDraft } from "immer";
 import { v4 } from "uuid";
 
 const HEIGHT = 50;
