@@ -313,14 +313,14 @@ const Index: React.FC<IndexProps> = ({ data }) => {
               </span>
               <img src="/images/pajamas_information-o.png" alt="" />
             </div>
-            <Link href="/flappygame">
-              <div className="flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px]">
-                <img src="/images/lightening.svg" />
-                <span>
-                  <span className="text-main">{mount}</span> / 1000
-                </span>
-                <img src="/images/pajamas_information-o.png" alt="" />
-              </div>
+            <Link
+              href="/flappy"
+              className={`flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px] ml-auto ${
+                tap > 4 ? "block" : "hidden"
+              }`}
+            >
+              <img src="/images/redbird-small.svg" alt="" />
+              <span className="text-[#E3310B]">Game Go</span>
             </Link>
           </div>
         </div>
