@@ -26,7 +26,9 @@ export default function Pipes() {
             transition={{
               ease: "linear",
             }}
-          />
+          >
+            <Pipe />
+          </motion.div>
           <motion.div
             key={pipes.bottom.key}
             initial={pipes.bottom.initial}
@@ -36,7 +38,9 @@ export default function Pipes() {
             transition={{
               ease: "linear",
             }}
-          />
+          >
+            <Pipe />
+          </motion.div>
         </>
       ))}
     </>
