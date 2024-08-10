@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/reducers/TaskReducer";
 import fs from "fs";
 import path from "path";
-import { Games } from "@mui/icons-material";
+import Link from "next/link";
 
 interface Game {
   level: number;
@@ -69,17 +69,33 @@ const Index: React.FC<IndexProps> = ({ data }) => {
   const getLevelInfo = () => {
     switch (true) {
       case count >= 1000000000:
-        return { text: "Legendary", number: 10, image: "/images/lvl-10-legendary.png" };
+        return {
+          text: "Legendary",
+          number: 10,
+          image: "/images/lvl-10-legendary.png",
+        };
       case count >= 100000000:
         return { text: "Lord", number: 9, image: "/images/lvl-9-lord.png" };
       case count >= 50000000:
-        return { text: "Grand Master", number: 8, image: "/images/lvl-8-grand-master.png" };
+        return {
+          text: "Grand Master",
+          number: 8,
+          image: "/images/lvl-8-grand-master.png",
+        };
       case count >= 10000000:
         return { text: "Master", number: 7, image: "/images/lvl-7-master.png" };
       case count >= 2000000:
-        return { text: "Diamond", number: 6, image: "/images/lvl-6-diamond.png" };
+        return {
+          text: "Diamond",
+          number: 6,
+          image: "/images/lvl-6-diamond.png",
+        };
       case count >= 1000000:
-        return { text: "Platinum", number: 5, image: "/images/lvl-5-platinum.png" };
+        return {
+          text: "Platinum",
+          number: 5,
+          image: "/images/lvl-5-platinum.png",
+        };
       case count >= 100000:
         return { text: "Gold", number: 4, image: "/images/lvl-4-gold.png" };
       case count >= 25000:
@@ -270,23 +286,24 @@ const Index: React.FC<IndexProps> = ({ data }) => {
               className={`w-[390px] h-[390px] ${tap < 5 ? "hidden" : ""}`}
               alt=""
             />
-            {alert === 1 && pulses.map((x: any, i: number) => (
-              <div
-                className={`animation font-medium text-[50px] text-[black] pointer-events-none select-none translate-x-1/2"`}
-                style={{
-                  position: "fixed",
-                  left: mousePosition.x + "px",
-                  top: mousePosition.y + "px",
-                }}
-                key={i}
-              >
-                <img
-                  className="w-[50px] h-[50px]"
-                  src="/images/coin.png"
-                  alt=""
-                />
-              </div>
-            ))}
+            {alert === 1 &&
+              pulses.map((x: any, i: number) => (
+                <div
+                  className={`animation font-medium text-[50px] text-[black] pointer-events-none select-none translate-x-1/2"`}
+                  style={{
+                    position: "fixed",
+                    left: mousePosition.x + "px",
+                    top: mousePosition.y + "px",
+                  }}
+                  key={i}
+                >
+                  <img
+                    className="w-[50px] h-[50px]"
+                    src="/images/coin.png"
+                    alt=""
+                  />
+                </div>
+              ))}
           </div>
           <div className="flex font-bold text-[18px] text-black mt-[-50px]">
             <div className="flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px]">
@@ -296,22 +313,19 @@ const Index: React.FC<IndexProps> = ({ data }) => {
               </span>
               <img src="/images/pajamas_information-o.png" alt="" />
             </div>
-            <div
-              className={`flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px] ml-auto ${
-                tap > 4 ? "block" : "hidden"
-              }`}
-            >
-              <img src="/images/redbird-small.svg" alt="" />
-              <span className="text-[#E3310B]">Game Go</span>
-            </div>
-            {/* <div className="flex items-center space-x-2 ml-auto">
-              <img src="/images/boost.svg" />
-              <span>Boost</span>
-            </div> */}
+            <Link href="/flappy">
+              <div
+                className={`flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px] ml-auto ${
+                  tap > 4 ? "block" : "hidden"
+                }`}
+              >
+                <img src="/images/redbird-small.svg" alt="" />
+                <span className="text-[#E3310B]">Game Go</span>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
-      
     </>
   );
 };

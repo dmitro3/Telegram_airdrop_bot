@@ -20,7 +20,7 @@ function Friend() {
         else setItems(response.data.items);
       }
     };
-    fetchData();
+    //fetchData();
   }, [user]);
 
   const handleInviteClick = async () => {
