@@ -23,7 +23,6 @@ export default function Pipes() {
               rotate: 180,
             }}
             className="absolute"
-            children={<Pipe />}
             transition={{
               ease: "linear",
             }}
@@ -34,7 +33,6 @@ export default function Pipes() {
             animate={pipes.bottom.position}
             style={pipes.bottom.size}
             className="absolute"
-            children={<Pipe />}
             transition={{
               ease: "linear",
             }}
