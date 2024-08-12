@@ -2,10 +2,8 @@
 
 import _ from "lodash";
 import React, { useEffect } from "react";
-import useMediaQuery from "./useMediaQuery";
 import { useImmer } from "use-immer";
 import { TargetAndTransition } from "framer-motion";
-import useElementSize from "./useElementSize";
 import { WritableDraft } from "immer";
 import { v4 } from "uuid";
 import Modal from "@/app/components/Modal";
@@ -25,8 +23,8 @@ const defaultState = {
       y: 0,
     },
     isFlying: true,
-    fall: { distance: 25, delay: 100 },
-    fly: { distance: 120 },
+    fall: { distance: 20, delay: 100 },
+    fly: { distance: 100 },
     flap: {
       delay: 0,
     },
@@ -349,7 +347,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       draft.bird.isFlying = false;
       draft.isStarted = false;
       setShowModal(true);
-      draft.bird.animate.rotate = [0, 180];
+      draft.bird.animate.rotate = [0, 90];
     } else {
       draft.bird.animate.rotate = [0, 0];
     }
@@ -357,9 +355,10 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fly = () => {
     setState((draft) => {
+      draft.bird.position.y -= draft.bird.fly.distance;
       draft.bird.isFlying = true;
       checkImpact(draft);
-      draft.bird.position.y -= draft.bird.fly.distance;
+      
       return draft;
     });
   };

@@ -20,7 +20,7 @@ const Modal: React.FC<ModalProps> = ({ show, onContinue, onExit }) => {
     
     if (!show) return null;
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 px-0 flex-col mt-[-100px]">
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 px-0 flex-col mt-[-100px] select-none">
       <div>
         <Image src="/overbird.png" width={94} height={84} alt="game over" />
       </div>

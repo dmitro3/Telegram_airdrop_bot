@@ -22,7 +22,7 @@ export default function Game() {
   }, [window, ref]);
 
   return (
-    <motion.main layout className="relative overflow-x-hidden h-full bg-white">
+    <motion.main layout className="relative overflow-x-hidden h-full bg-white select-none">
       <Background />
       <motion.div
         ref={ref}
@@ -32,11 +32,9 @@ export default function Game() {
       >
         {isReady && (
           <>
-            <div className="select-none">
               <NowScore />
               <Pipes />
               <FlappyBird />
-            </div>
           </>
         )}
       </motion.div>
