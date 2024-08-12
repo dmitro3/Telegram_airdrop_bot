@@ -71,7 +71,7 @@ const defaultState = {
     height: 0,
   },
   multiplier: {
-    distance: 1.1,
+    distance: 1,
     step: 5,
   },
 };
