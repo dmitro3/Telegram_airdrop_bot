@@ -19,10 +19,7 @@ export default function Game() {
   }, [window, ref]);
 
   return (
-    <motion.main
-      layout
-      className="relative overflow-x-hidden h-full bg-white"
-    >
+    <motion.main layout className="relative overflow-x-hidden h-full bg-white">
       <Background />
       <motion.div
         ref={ref}

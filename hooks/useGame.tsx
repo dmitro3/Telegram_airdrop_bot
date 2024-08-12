@@ -1,13 +1,14 @@
-'use client'
+"use client";
 
 import _ from "lodash";
 import React, { useEffect } from "react";
 import useMediaQuery from "./useMediaQuery";
 import { useImmer } from "use-immer";
-import { pipe, TargetAndTransition } from "framer-motion";
+import { TargetAndTransition } from "framer-motion";
 import useElementSize from "./useElementSize";
 import { WritableDraft } from "immer";
 import { v4 } from "uuid";
+import Modal from "@/app/components/Modal";
 
 const HEIGHT = 50;
 const WIDTH = 50;
@@ -57,7 +58,7 @@ const defaultState = {
     height: 0,
     extension: 0,
     tolerance: 0,
-    distance: 5,
+    distance: 15,
     delay: 75,
   },
   rounds: [],
@@ -68,7 +69,7 @@ const defaultState = {
     height: 0,
   },
   multiplier: {
-    distance: 1,
+    distance: 1.1,
     step: 5,
   },
 };
@@ -145,6 +146,7 @@ type StateDraft = WritableDraft<GameState>;
 const GameContext = React.createContext<GameContext | null>(null);
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useImmer<GameState>(defaultState);
+  const [showModal, setShowModal] = React.useState(false);
   // Main Functions
   const startGame = (window: Size) => {
     setState((draft) => {
@@ -210,7 +212,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
           const { height, y } = generatePipeExtension(index, draft);
           pipe.top.position.x = draft.pipe.width * 2 + draft.window.width;
           pipe.bottom.position.x = draft.pipe.width * 2 + draft.window.width;
-          
           pipe.top.size.height = height;
           pipe.bottom.size.height = height;
           pipe.bottom.position.y = y;
@@ -250,7 +251,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     draft.bird.position.x = draft.window.width / 2 - draft.bird.size.width / 2;
     draft.bird.position.y =
       draft.window.height / 2 - draft.bird.size.height / 2;
-      console.log(draft.bird.position.x);
     draft.bird.initial.x = draft.bird.position.x;
     draft.bird.initial.y = draft.bird.position.y;
   };
@@ -263,8 +263,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     });
   const checkImpact = (draft: StateDraft) => {
     const groundImpact =
-      draft.bird.position.y + draft.bird.size.height / 2 >=
-      draft.window.height;
+      draft.bird.position.y + draft.bird.size.height / 2 >= draft.window.height;
     const impactablePipes = draft.pipes.filter((pipe) => {
       return (
         pipe.top.position.x <
@@ -272,26 +271,37 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
             draft.pipe.tolerance +
             draft.bird.size.width / 2 &&
         pipe.top.position.x + pipe.top.size.width >
-          draft.bird.position.x + draft.pipe.tolerance - draft.bird.size.width / 2
+          draft.bird.position.x +
+            draft.pipe.tolerance -
+            draft.bird.size.width / 2
       );
     });
     const pipeImpact = impactablePipes.some((pipe) => {
-      console.log("A", pipe.top.position.x)
       const topPipe = pipe.top.position.y + pipe.top.size.height;
       const bottomPipe = pipe.bottom.position.y;
       const birdTop = draft.bird.position.y + draft.bird.size.height / 2;
       const birdBottom =
-        draft.bird.position.y + draft.bird.size.height / 2 - draft.pipe.tolerance;
+        draft.bird.position.y +
+        draft.bird.size.height / 2 -
+        draft.pipe.tolerance;
       return birdTop < topPipe || birdBottom > bottomPipe;
     });
     if (groundImpact || pipeImpact) {
-      console.log("ground->", groundImpact, "pipe->", pipeImpact)
       draft.bird.isFlying = false;
       draft.isStarted = false;
-      draft.bird.animate.rotate = [0, 540];
+      setShowModal(true); // Show the modal on impact
     } else {
       draft.bird.animate.rotate = [0, 0];
     }
+  };
+
+  const handleContinue = () => {
+    setShowModal(false);
+    startGame(state.window); // Restart the game
+  };
+
+  const handleExit = () => {
+    setShowModal(false);
   };
 
   const fly = () => {
@@ -324,6 +334,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       {children}
+      <Modal show={showModal} onContinue={handleContinue} onExit={handleExit}/>
     </GameContext.Provider>
   );
 };
