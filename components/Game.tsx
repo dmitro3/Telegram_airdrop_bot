@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
@@ -21,14 +21,14 @@ export default function Game() {
   return (
     <motion.main
       layout
-      className="m-auto overflow-hidden flex flex-col max-w-[480px] border-8 border-zinc-200 rounded-xl bg-[#ded895]   relative max-h-[800px] w-full h-full"
+      className="relative overflow-x-hidden h-full bg-white"
     >
       <Background />
       <motion.div
-        ref={ref} 
+        ref={ref}
         key={_.last(rounds)?.key || "initial"}
         onTap={handleWindowClick}
-        className="h-[calc(100%-7rem)] z-10 flex relative overflow-hidden cursor-pointer"
+        className="h-[calc(100%-184px)] z-10 flex relative overflow-hidden cursor-pointer"
       >
         {isReady && (
           <>

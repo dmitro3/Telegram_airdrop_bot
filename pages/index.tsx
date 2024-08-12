@@ -198,7 +198,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
             `}
         </style>
       </div>
-      <div className="relative border-t border-[#DFDCD5] flex-1 h-0 overflow-x-hidden">
+      <div className="relative border-t border-[#DFDCD5] flex-1 overflow-x-hidden">
         <div className="flex flex-col gap-5 relative z-[1] px-5 pt-[10px] pb-[150px] rounded-t-3xl bg-gradient-to-b from-[#FFF3D8] to-[#F8DFA6] overflow-y-auto h-full">
           <div className="flex gap-1">
             <div className="bg-gradient-to-b from-[#FFFFFF] to-[#F2F2F2] shadow-[0px_4px_0px_0px_#CACACA] rounded-[10px] w-full flex flex-col items-center p-[10px]">
