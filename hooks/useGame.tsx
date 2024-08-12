@@ -8,7 +8,7 @@ import { TargetAndTransition } from "framer-motion";
 import useElementSize from "./useElementSize";
 import { WritableDraft } from "immer";
 import { v4 } from "uuid";
-import Modal from "@/components/Modal";
+import Modal from "@/app/components/Modal";
 
 const HEIGHT = 50;
 const WIDTH = 50;
