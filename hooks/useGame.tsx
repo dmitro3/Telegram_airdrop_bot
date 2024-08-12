@@ -319,7 +319,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         return birdTop < topPipe || birdBottom > bottomPipe;
       });
       if (groundImpact || pipeImpact) {
-        console.log("ground->", groundImpact, "pipe->", pipeImpact)
         draft.bird.isFlying = false;
         draft.isStarted = false;
         setShowModal(true);

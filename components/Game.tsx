@@ -32,9 +32,11 @@ export default function Game() {
       >
         {isReady && (
           <>
-            <NowScore />
-            <Pipes />
-            <FlappyBird />
+            <div className="select-none">
+              <NowScore />
+              <Pipes />
+              <FlappyBird />
+            </div>
           </>
         )}
       </motion.div>
