@@ -295,41 +295,38 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       draft.bird.frameIndex = next;
       return draft;
     });
-  const checkImpact = (draft: StateDraft) => {
-    const birdTop = draft.bird.position.y;
-    const birdBottom = draft.bird.position.y + draft.bird.size.height;
-
-    // Check if the bird hits the ground
-    const groundImpact =
-      birdBottom >= draft.window.height + draft.pipe.tolerance;
-
-    // Filter pipes that are currently within the bird's horizontal range
-    const impactablePipes = draft.pipes.filter((pipe) => {
-      const pipeRightEdge = pipe.top.position.x + pipe.top.size.width;
-      const pipeLeftEdge = pipe.top.position.x;
-
-      return (
-        pipeRightEdge > draft.bird.position.x &&
-        pipeLeftEdge < draft.bird.position.x + draft.bird.size.width
-      );
-    });
-
-    // Check if the bird impacts any of the pipes
-    const pipeImpact = impactablePipes.some((pipe) => {
-      const topPipeBottom = pipe.top.position.y + pipe.top.size.height;
-      const bottomPipeTop = pipe.bottom.position.y;
-
-      return birdTop < topPipeBottom || birdBottom > bottomPipeTop;
-    });
-
-    if (groundImpact || pipeImpact) {
-      draft.bird.isFlying = false;
-      draft.isStarted = false;
-      setShowModal(true);
-    } else {
-      draft.bird.animate.rotate = [0, 0];
-    }
-  };
+    const checkImpact = (draft: StateDraft) => {
+      const groundImpact =
+        draft.bird.position.y + draft.bird.size.height / 2 >=
+        draft.window.height;
+      const impactablePipes = draft.pipes.filter((pipe) => {
+        return (
+          pipe.top.position.x <
+            draft.bird.position.x -
+              draft.pipe.tolerance +
+              draft.bird.size.width / 2 &&
+          pipe.top.position.x + pipe.top.size.width >
+            draft.bird.position.x + draft.pipe.tolerance - draft.bird.size.width / 2
+        );
+      });
+      const pipeImpact = impactablePipes.some((pipe) => {
+        console.log("A", pipe.top.position.x)
+        const topPipe = pipe.top.position.y + pipe.top.size.height;
+        const bottomPipe = pipe.bottom.position.y;
+        const birdTop = draft.bird.position.y + draft.bird.size.height / 2;
+        const birdBottom =
+          draft.bird.position.y + draft.bird.size.height / 2 - draft.pipe.tolerance;
+        return birdTop < topPipe || birdBottom > bottomPipe;
+      });
+      if (groundImpact || pipeImpact) {
+        console.log("ground->", groundImpact, "pipe->", pipeImpact)
+        draft.bird.isFlying = false;
+        draft.isStarted = false;
+        setShowModal(true);
+      } else {
+        draft.bird.animate.rotate = [0, 0];
+      }
+    };
 
   const handleContinue = () => {
     setShowModal(false);

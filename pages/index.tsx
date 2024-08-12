@@ -12,6 +12,7 @@ import { setUser } from "@/redux/reducers/TaskReducer";
 import fs from "fs";
 import path from "path";
 import Link from "next/link";
+import { NextResponse } from "next/server";
 
 interface Game {
   level: number;
@@ -175,6 +176,28 @@ const Index: React.FC<IndexProps> = ({ data }) => {
     const mountValue = getMountBylevel(tap);
     setlvlcoin(mountValue);
   }, [tap]);
+
+  const handleSaveCoin = async () => {
+    try {
+      const res = await fetch('/api/saveCount', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ count }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to save count');
+      }
+
+      const data = await res.json();
+      console.log(data.message);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <>
       <div>
@@ -318,6 +341,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
               className={`flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px] ml-auto ${
                 tap > 4 ? "block" : "hidden"
               }`}
+              onClick={handleSaveCoin}
             >
               <img src="/images/redbird-small.svg" alt="" />
               <span className="text-[#E3310B]">Game Go</span>
