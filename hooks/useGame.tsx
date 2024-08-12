@@ -25,10 +25,10 @@ const defaultState = {
       y: 0,
     },
     isFlying: true,
-    fall: { distance: 15, delay: 100 },
-    fly: { distance: 75 },
+    fall: { distance: 25, delay: 100 },
+    fly: { distance: 120 },
     flap: {
-      delay: 100,
+      delay: 0,
     },
   },
   pipes: Array(4)
@@ -295,61 +295,64 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       draft.bird.frameIndex = next;
       return draft;
     });
-    const checkImpact = (draft: StateDraft) => {
-      const groundImpact =
-        draft.bird.position.y + draft.bird.size.height / 2 >=
-        draft.window.height;
-      const impactablePipes = draft.pipes.filter((pipe) => {
-        return (
-          pipe.top.position.x <
-            draft.bird.position.x -
-              draft.pipe.tolerance +
-              draft.bird.size.width / 2 &&
-          pipe.top.position.x + pipe.top.size.width >
-            draft.bird.position.x + draft.pipe.tolerance - draft.bird.size.width / 2
-        );
-      });
-      const pipeImpact = impactablePipes.some((pipe) => {
-        console.log("A", pipe.top.position.x)
-        const topPipe = pipe.top.position.y + pipe.top.size.height;
-        const bottomPipe = pipe.bottom.position.y;
-        const birdTop = draft.bird.position.y + draft.bird.size.height / 2;
-        const birdBottom =
-          draft.bird.position.y + draft.bird.size.height / 2 - draft.pipe.tolerance;
-        return birdTop < topPipe || birdBottom > bottomPipe;
-      });
-      if (groundImpact || pipeImpact) {
-        draft.bird.isFlying = false;
-        draft.isStarted = false;
-        setShowModal(true);
+
+    const handleContinue = () => {
+      setShowModal(false);
+      startGame(state.window); 
+      if (state.isStarted) {
+        fly();
       } else {
-        draft.bird.animate.rotate = [0, 0];
+        setState((draft) => {
+          draft.isStarted = true;
+          draft.rounds.push({
+            score: 0,
+            datetime: new Date().toISOString(),
+            key: v4(),
+          });
+          draft.bird.isFlying = true;
+          setBirdCenter(draft);
+          createPipes(draft);
+          return draft;
+        });
       }
     };
 
-  const handleContinue = () => {
-    setShowModal(false);
-    startGame(state.window); 
-    if (state.isStarted) {
-      fly();
-    } else {
-      setState((draft) => {
-        draft.isStarted = true;
-        draft.rounds.push({
-          score: 0,
-          datetime: new Date().toISOString(),
-          key: v4(),
-        });
-        draft.bird.isFlying = true;
-        setBirdCenter(draft);
-        createPipes(draft);
-        return draft;
-      });
-    }
-  };
-
   const handleExit = () => {
     setShowModal(false);
+  };
+  const checkImpact = (draft: StateDraft) => {
+    const groundImpact =
+      draft.bird.position.y + draft.bird.size.height / 2 >= draft.window.height;
+    const impactablePipes = draft.pipes.filter((pipe) => {
+      return (
+        pipe.top.position.x <
+          draft.bird.position.x -
+            draft.pipe.tolerance +
+            draft.bird.size.width / 2 &&
+        pipe.top.position.x + pipe.top.size.width >
+          draft.bird.position.x +
+            draft.pipe.tolerance -
+            draft.bird.size.width / 2
+      );
+    });
+    const pipeImpact = impactablePipes.some((pipe) => {
+      const topPipe = pipe.top.position.y + pipe.top.size.height;
+      const bottomPipe = pipe.bottom.position.y;
+      const birdTop = draft.bird.position.y + draft.bird.size.height / 2;
+      const birdBottom =
+        draft.bird.position.y +
+        draft.bird.size.height / 2 -
+        draft.pipe.tolerance;
+      return birdTop < topPipe || birdBottom > bottomPipe;
+    });
+    if (groundImpact || pipeImpact) {
+      draft.bird.isFlying = false;
+      draft.isStarted = false;
+      setShowModal(true);
+      draft.bird.animate.rotate = [0, 180];
+    } else {
+      draft.bird.animate.rotate = [0, 0];
+    }
   };
 
   const fly = () => {
@@ -364,8 +367,9 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const fall = () => {
     setState((draft) => {
       draft.bird.isFlying = true;
-      checkImpact(draft);
       draft.bird.position.y += draft.bird.fall.distance;
+      checkImpact(draft);
+      
       return draft;
     });
   };
