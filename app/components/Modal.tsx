@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import useGame from "@/hooks/useGame";
 import _ from "lodash";
 import Image from "next/image";
@@ -12,11 +12,17 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ show, onContinue, onExit }) => {
-  if (!show) return null;
+  
   const { rounds } = useGame();
 
   const score = _.last(rounds)?.score || 0;
   const best = _.maxBy(rounds, "score")?.score || 0;
+  
+  // useEffect(() => {
+    //   if (!show) return null;
+    // }, [show]);
+    if (!show) return null;
+    
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 px-0 flex-col mt-[-100px]">
       <div>
