@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import useGame from "../hooks/useGame";
 import _ from "lodash";
+import Modal from "../app/components/Modal";
 
 export default function Footer() {
   const {

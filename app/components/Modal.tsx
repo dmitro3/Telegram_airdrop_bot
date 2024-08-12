@@ -9,14 +9,14 @@ interface ModalProps {
   show: boolean;
   onContinue: () => void;
   onExit: () => void;
+  score: number;
+  best: number;
 }
 
 const Modal: React.FC<ModalProps> = ({ show, onContinue, onExit }) => {
   if (!show) return null;
-  const { rounds } = useGame();
-
-  const score = _.last(rounds)?.score || 0;
-  const best = _.maxBy(rounds, "score")?.score || 0;
+  const { rounds, maxscore} = useGame();
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 px-0 flex-col mt-[-100px]">
       <div>
@@ -29,11 +29,11 @@ const Modal: React.FC<ModalProps> = ({ show, onContinue, onExit }) => {
         <div className="flex">
           <div className="flex-[50%] flex-col">
             <p className="flex justify-center items-center text-[#DD523A] font-semibold text-sm">Your Score</p>
-            <p className="flex justify-center items-center text-[#282828] font-bold text-2xl">{score}</p>
+            <p className="flex justify-center items-center text-[#282828] font-bold text-2xl">{rounds[rounds.length - 1].score}</p>
           </div>
           <div className="flex-[50%] flex-col border-l-2 border-[#CACACA]">
             <p className="flex justify-center items-center text-[#DD523A] font-semibold text-sm">Top Score</p>
-            <p className="flex justify-center items-center text-[#282828] font-bold text-2xl">{best}</p>
+            <p className="flex justify-center items-center text-[#282828] font-bold text-2xl">{maxscore}</p>
           </div>
         </div>
         <div className="flex gap-[10px] pt-5">
