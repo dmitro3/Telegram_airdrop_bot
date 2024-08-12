@@ -8,7 +8,7 @@ import { TargetAndTransition } from "framer-motion";
 import useElementSize from "./useElementSize";
 import { WritableDraft } from "immer";
 import { v4 } from "uuid";
-import Modal from "@/app/components/Modal";
+import Modal from "@/components/Modal";
 
 const HEIGHT = 50;
 const WIDTH = 50;
@@ -72,7 +72,6 @@ const defaultState = {
     distance: 1.1,
     step: 5,
   },
-  maxscore: 0
 };
 type Size = {
   width: number;
@@ -142,7 +141,6 @@ interface GameState {
     step: number;
     distance: number;
   };
-  maxscore: number;
 }
 type StateDraft = WritableDraft<GameState>;
 const GameContext = React.createContext<GameContext | null>(null);
@@ -161,7 +159,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const increaseScore = (draft: StateDraft) => {
     draft.rounds[draft.rounds.length - 1].score += 1;
-    draft.maxscore = Math.max(draft.maxscore, draft.rounds[draft.rounds.length - 1].score);
   };
   const multiplySpeed = (draft: StateDraft) => {
     const round = _.last(draft.rounds);
@@ -305,7 +302,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleExit = () => {
     setShowModal(false);
-    
   };
 
   const fly = () => {
