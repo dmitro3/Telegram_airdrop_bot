@@ -42,6 +42,7 @@ const defaultState = {
           y: 0,
         },
         size: { width: 0, height: 0 },
+        passed: false,
       },
       bottom: {
         key: "bottom" + index,
@@ -51,6 +52,7 @@ const defaultState = {
           y: 0,
         },
         size: { width: 0, height: 0 },
+        passed: false,
       },
     })),
   pipe: {
@@ -87,6 +89,7 @@ export type PipeType = {
   initial: Coordinates;
   size: Size;
   key?: string;
+  passed: boolean;
 };
 export type PipesType = {
   top: PipeType;
@@ -178,37 +181,65 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const createPipes = (draft: StateDraft) => {
     const window = draft.window;
-    draft.pipe.width = window.width / draft.pipes.length;
-    draft.pipe.height = (1 / 3) * window.height;
-    draft.pipe.distance = defaultState.pipe.distance;
-    draft.pipe.extension = (0.5 / 3) * window.height;
+    const pipeGap = (1 / 5) * window.width; // Adjust this value to control the gap between pipes
+    const pipeWidth = window.width / draft.pipes.length; // Width of each pipe
+
+    draft.pipe.width = pipeWidth;
+    draft.pipe.height = (1 / 3) * window.height; // Height of the pipe
+    draft.pipe.extension = (0.5 / 3) * window.height; // Extension for pipe height
+
     draft.pipes.forEach((pipe, index) => {
       const { height, y } = generatePipeExtension(index, draft);
-      var x = (index * 2 + 1) * draft.pipe.width + window.width;
+
+      // Position the pipes based on their index and gap
+      const x = window.width + index * (pipeWidth + pipeGap); // Adjusted pipe position to avoid overlap
+
+      // Top pipe
       pipe.top.initial = {
         x,
         y: 0,
       };
       pipe.top.size = {
         height,
-        width: draft.pipe.width,
+        width: pipeWidth,
       };
+
+      // Bottom pipe
       pipe.bottom.initial = {
         x,
         y,
       };
       pipe.bottom.size = {
         height,
-        width: draft.pipe.width,
+        width: pipeWidth,
       };
+
+      // Set positions
       pipe.top.position = pipe.top.initial;
       pipe.bottom.position = pipe.bottom.initial;
+
+      // Ensure 'passed' is reset
+      pipe.top.passed = false;
+      pipe.bottom.passed = false;
     });
   };
+
   const movePipes = () => {
     setState((draft) => {
       draft.pipes.forEach((pipe, index) => {
-        if (pipe.top.position.x + pipe.top.size.width * 2 <= 0) {
+        const birdPassedPipe =
+          pipe.top.position.x + pipe.top.size.width < draft.bird.position.x;
+
+        // If the bird passes the pipe and the score hasn't been increased for this pipe yet
+        if (birdPassedPipe && !pipe.top.passed) {
+          increaseScore(draft);
+          multiplySpeed(draft);
+          pipe.top.passed = true; // Mark this pipe as passed
+          pipe.bottom.passed = true; // Ensure the bottom pipe is also marked as passed
+        }
+
+        // Reset pipe position when it moves out of the window
+        if (pipe.top.position.x + pipe.top.size.width <= 0) {
           const { height, y } = generatePipeExtension(index, draft);
           pipe.top.position.x = draft.pipe.width * 2 + draft.window.width;
           pipe.bottom.position.x = draft.pipe.width * 2 + draft.window.width;
@@ -217,9 +248,11 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
           pipe.bottom.position.y = y;
           pipe.top.key = v4();
           pipe.bottom.key = v4();
-          increaseScore(draft);
-          multiplySpeed(draft);
+          pipe.top.passed = false; // Reset the passed state for the new pipe
+          pipe.bottom.passed = false; // Reset the passed state for the new pipe
         }
+
+        // Move the pipes
         pipe.top.position.x -= draft.pipe.distance;
         pipe.bottom.position.x -= draft.pipe.distance;
       });
@@ -227,6 +260,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       return draft;
     });
   };
+
   // Window Functions
   const handleWindowClick = () => {
     if (state.isStarted) {
@@ -262,34 +296,36 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       return draft;
     });
   const checkImpact = (draft: StateDraft) => {
+    const birdTop = draft.bird.position.y;
+    const birdBottom = draft.bird.position.y + draft.bird.size.height;
+
+    // Check if the bird hits the ground
     const groundImpact =
-      draft.bird.position.y + draft.bird.size.height / 2 >= draft.window.height;
+      birdBottom >= draft.window.height + draft.pipe.tolerance;
+
+    // Filter pipes that are currently within the bird's horizontal range
     const impactablePipes = draft.pipes.filter((pipe) => {
+      const pipeRightEdge = pipe.top.position.x + pipe.top.size.width;
+      const pipeLeftEdge = pipe.top.position.x;
+
       return (
-        pipe.top.position.x <
-          draft.bird.position.x -
-            draft.pipe.tolerance +
-            draft.bird.size.width / 2 &&
-        pipe.top.position.x + pipe.top.size.width >
-          draft.bird.position.x +
-            draft.pipe.tolerance -
-            draft.bird.size.width / 2
+        pipeRightEdge > draft.bird.position.x &&
+        pipeLeftEdge < draft.bird.position.x + draft.bird.size.width
       );
     });
+
+    // Check if the bird impacts any of the pipes
     const pipeImpact = impactablePipes.some((pipe) => {
-      const topPipe = pipe.top.position.y + pipe.top.size.height;
-      const bottomPipe = pipe.bottom.position.y;
-      const birdTop = draft.bird.position.y + draft.bird.size.height / 2;
-      const birdBottom =
-        draft.bird.position.y +
-        draft.bird.size.height / 2 -
-        draft.pipe.tolerance;
-      return birdTop < topPipe || birdBottom > bottomPipe;
+      const topPipeBottom = pipe.top.position.y + pipe.top.size.height;
+      const bottomPipeTop = pipe.bottom.position.y;
+
+      return birdTop < topPipeBottom || birdBottom > bottomPipeTop;
     });
+
     if (groundImpact || pipeImpact) {
       draft.bird.isFlying = false;
       draft.isStarted = false;
-      setShowModal(true); // Show the modal on impact
+      setShowModal(true);
     } else {
       draft.bird.animate.rotate = [0, 0];
     }
@@ -297,7 +333,23 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleContinue = () => {
     setShowModal(false);
-    startGame(state.window); // Restart the game
+    startGame(state.window); 
+    if (state.isStarted) {
+      fly();
+    } else {
+      setState((draft) => {
+        draft.isStarted = true;
+        draft.rounds.push({
+          score: 0,
+          datetime: new Date().toISOString(),
+          key: v4(),
+        });
+        draft.bird.isFlying = true;
+        setBirdCenter(draft);
+        createPipes(draft);
+        return draft;
+      });
+    }
   };
 
   const handleExit = () => {
@@ -334,7 +386,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       {children}
-      <Modal show={showModal} onContinue={handleContinue} onExit={handleExit}/>
+      <Modal show={showModal} onContinue={handleContinue} onExit={handleExit} />
     </GameContext.Provider>
   );
 };

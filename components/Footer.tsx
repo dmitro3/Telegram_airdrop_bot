@@ -2,7 +2,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import useGame from "../hooks/useGame";
 import _ from "lodash";
-import Modal from "../app/components/Modal";
 
 export default function Footer() {
   const {
@@ -45,13 +44,6 @@ export default function Footer() {
           className="absolute w-full h-full"
           {...animation}
         ></motion.div>
-      </div>
-      <div className="flex p-2 uppercase font-mono font-semibold items-center justify-around h-[calc(100%-2.5rem)] text-xl text-white flex-wrap">
-        <div>Best: {best}</div>
-        <div>Score: {score}</div>
-        <div className="w-full text-center text-lg">
-          Speed: {(distance / 10).toFixed(1)}
-        </div>
       </div>
     </footer>
   );

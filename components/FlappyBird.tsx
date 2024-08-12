@@ -19,7 +19,7 @@ export function Bird() {
         height,
         width,
         backgroundPosition: frame,
-        backgroundSize: "auto 100%",
+        backgroundSize: "100% 100%",
         zIndex: 100,
       }}
     />
@@ -40,7 +40,7 @@ export default function FlappyBird() {
     <motion.div
       className={`m-auto absolute z-40 ${
         !isStarted && "animate-pulse"
-      } w-0 h-10`}
+      }`}
       style={{
         ...position,
       }}
