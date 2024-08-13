@@ -294,53 +294,51 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       return draft;
     });
 
-    const handleContinue = () => {
-      setShowModal(false);
-      startGame(state.window); 
-      if (state.isStarted) {
-        fly();
-      } else {
-        setState((draft) => {
-          draft.isStarted = true;
-          draft.rounds.push({
-            score: 0,
-            datetime: new Date().toISOString(),
-            key: v4(),
-          });
-          draft.bird.isFlying = true;
-          setBirdCenter(draft);
-          createPipes(draft);
-          return draft;
+  const handleContinue = () => {
+    setShowModal(false);
+    startGame(state.window);
+    if (state.isStarted) {
+      fly();
+    } else {
+      setState((draft) => {
+        draft.isStarted = true;
+        draft.rounds.push({
+          score: 0,
+          datetime: new Date().toISOString(),
+          key: v4(),
         });
-      }
-    };
+        draft.bird.isFlying = true;
+        setBirdCenter(draft);
+        createPipes(draft);
+        return draft;
+      });
+    }
+  };
 
   const handleExit = () => {
     setShowModal(false);
   };
+
   const checkImpact = (draft: StateDraft) => {
     const groundImpact =
-      draft.bird.position.y + draft.bird.size.height / 2 >= draft.window.height;
+      draft.bird.position.y + draft.bird.size.height >=
+      draft.window.height + draft.pipe.tolerance;
     const impactablePipes = draft.pipes.filter((pipe) => {
       return (
         pipe.top.position.x <
           draft.bird.position.x -
             draft.pipe.tolerance +
-            draft.bird.size.width / 2 &&
+            draft.bird.size.width &&
         pipe.top.position.x + pipe.top.size.width >
-          draft.bird.position.x +
-            draft.pipe.tolerance -
-            draft.bird.size.width / 2
+          draft.bird.position.x + draft.pipe.tolerance
       );
     });
     const pipeImpact = impactablePipes.some((pipe) => {
       const topPipe = pipe.top.position.y + pipe.top.size.height;
       const bottomPipe = pipe.bottom.position.y;
-      const birdTop = draft.bird.position.y + draft.bird.size.height / 2;
+      const birdTop = draft.bird.position.y + draft.pipe.tolerance;
       const birdBottom =
-        draft.bird.position.y +
-        draft.bird.size.height / 2 -
-        draft.pipe.tolerance;
+        draft.bird.position.y + draft.bird.size.height - draft.pipe.tolerance;
       return birdTop < topPipe || birdBottom > bottomPipe;
     });
     if (groundImpact || pipeImpact) {
@@ -358,7 +356,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       draft.bird.position.y -= draft.bird.fly.distance;
       draft.bird.isFlying = true;
       checkImpact(draft);
-      
+
       return draft;
     });
   };
@@ -368,7 +366,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       draft.bird.isFlying = true;
       draft.bird.position.y += draft.bird.fall.distance;
       checkImpact(draft);
-      
+
       return draft;
     });
   };
