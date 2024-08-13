@@ -5,16 +5,15 @@ import { motion } from "framer-motion";
 import FlappyBird from "./FlappyBird";
 import Footer from "./Footer";
 import Background from "./Background";
-import useGame from "../hooks/useGame";
+import useGame from "@/hooks/useGame";
 import Pipes from "./Pipes";
 import useElementSize from "../hooks/useElementSize";
 import NowScore from "./Nowscore";
 import _ from "lodash";
 
 export default function Game() {
-  const { handleWindowClick, startGame, isReady, rounds, bird } = useGame(); // Destructure `bird`
+  const { handleWindowClick, startGame, isReady, rounds } = useGame();
 
-  const score = _.last(rounds)?.score || 0;
   const [ref, window] = useElementSize();
 
   useEffect(() => {
@@ -24,7 +23,10 @@ export default function Game() {
   }, [window, ref]);
 
   return (
-    <motion.main layout className="relative overflow-x-hidden h-full bg-white select-none">
+    <motion.main
+      layout
+      className="relative overflow-x-hidden h-full bg-white select-none"
+    >
       <Background />
       <motion.div
         ref={ref}
@@ -34,9 +36,11 @@ export default function Game() {
       >
         {isReady && (
           <>
-            <NowScore />
-            <Pipes />
-            {bird.isVisible && <FlappyBird />} {/* Conditionally render the bird */}
+            <div >
+              <NowScore />
+              <Pipes />
+              <FlappyBird />
+            </div>
           </>
         )}
       </motion.div>

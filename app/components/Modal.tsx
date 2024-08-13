@@ -18,7 +18,7 @@ const Modal: React.FC<ModalProps> = ({ show, onContinue, onExit }) => {
   const score = _.last(rounds)?.score || 0;
   const best = _.maxBy(rounds, "score")?.score || 0;
     
-    if (!show) return null;
+  if (!show) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 px-0 flex-col mt-[-100px] select-none">
       <div>

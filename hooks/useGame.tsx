@@ -1,7 +1,7 @@
 "use client";
 
 import _ from "lodash";
-import React, { useEffect } from "react";
+import React from "react";
 import { useImmer } from "use-immer";
 import { TargetAndTransition } from "framer-motion";
 import { WritableDraft } from "immer";
@@ -73,7 +73,9 @@ const defaultState = {
     distance: 1,
     step: 5,
   },
+  collision: false,
 };
+
 type Size = {
   width: number;
   height: number;
@@ -94,6 +96,7 @@ export type PipesType = {
   top: PipeType;
   bottom: PipeType;
 };
+
 interface GameContext extends GameState {
   getNextFrame: () => void;
   fly: () => void;
@@ -102,6 +105,7 @@ interface GameContext extends GameState {
   movePipes: () => void;
   startGame: (window: Size) => void;
 }
+
 interface GameState {
   bird: {
     position: Coordinates;
@@ -144,33 +148,40 @@ interface GameState {
     step: number;
     distance: number;
   };
+  collision: boolean;
 }
+
 type StateDraft = WritableDraft<GameState>;
 const GameContext = React.createContext<GameContext | null>(null);
+
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useImmer<GameState>(defaultState);
   const [showModal, setShowModal] = React.useState(false);
-  // Main Functions
+
   const startGame = (window: Size) => {
     setState((draft) => {
       draft.window = window;
       draft.isReady = true;
-      draft.bird.isVisible = true; // Reset visibility when starting the game
+      draft.bird.isVisible = true;
+      draft.collision = false;
       setBirdCenter(draft);
       createPipes(draft);
       return draft;
     });
   };
+
   const increaseScore = (draft: StateDraft) => {
     draft.rounds[draft.rounds.length - 1].score += 1;
   };
+
   const multiplySpeed = (draft: StateDraft) => {
     const round = _.last(draft.rounds);
     if (round && round.score % draft.multiplier.step === 0) {
       draft.pipe.distance = draft.pipe.distance * draft.multiplier.distance;
     }
   };
-  // Pipe Functions
+
+  
   const generatePipeExtension = (index: number, draft: StateDraft) => {
     const odd = _.random(0, 1) === 1;
     const randomNumber = _.random(odd ? 0.5 : 0, odd ? 1 : 0, true);
@@ -180,22 +191,21 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       y: draft.window.height - draft.pipe.height + extension,
     };
   };
+
   const createPipes = (draft: StateDraft) => {
     const window = draft.window;
-    const pipeGap = (1 / 3) * window.width; // Adjust this value to control the gap between pipes
-    const pipeWidth = window.width / draft.pipes.length; // Width of each pipe
+    const pipeGap = (1 / 3) * window.width;
+    const pipeWidth = window.width / draft.pipes.length;
 
     draft.pipe.width = pipeWidth;
-    draft.pipe.height = (0.3) * window.height; // Height of the pipe
-    draft.pipe.extension = (0.5 / 6) * window.height; // Extension for pipe height
+    draft.pipe.height = 0.3 * window.height;
+    draft.pipe.extension = (0.5 / 6) * window.height;
 
     draft.pipes.forEach((pipe, index) => {
       const { height, y } = generatePipeExtension(index, draft);
 
-      // Position the pipes based on their index and gap
-      const x = window.width + index * (pipeWidth + pipeGap); // Adjusted pipe position to avoid overlap
+      const x = window.width + index * (pipeWidth + pipeGap);
 
-      // Top pipe
       pipe.top.initial = {
         x,
         y: 0,
@@ -205,7 +215,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         width: pipeWidth,
       };
 
-      // Bottom pipe
       pipe.bottom.initial = {
         x,
         y,
@@ -215,11 +224,9 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         width: pipeWidth,
       };
 
-      // Set positions
       pipe.top.position = pipe.top.initial;
       pipe.bottom.position = pipe.bottom.initial;
 
-      // Ensure 'passed' is reset
       pipe.top.passed = false;
       pipe.bottom.passed = false;
     });
@@ -228,30 +235,28 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const movePipes = () => {
     setState((draft) => {
       const windowWidth = draft.window.width;
-      const pipeGap = (1 / 3) * windowWidth; // Gap between pipes
+      const pipeGap = (1 / 3) * windowWidth;
       const pipeWidth = draft.pipe.width;
-      
+
       draft.pipes.forEach((pipe, index) => {
         const birdPassedPipe =
           pipe.top.position.x + pipe.top.size.width < draft.bird.position.x;
-  
-        // If the bird passes the pipe and the score hasn't been increased for this pipe yet
+
         if (birdPassedPipe && !pipe.top.passed) {
           increaseScore(draft);
           multiplySpeed(draft);
           pipe.top.passed = true;
           pipe.bottom.passed = true;
         }
-  
-        // Reset pipe position when it moves out of the window
+
         if (pipe.top.position.x + pipe.top.size.width <= 0) {
           const { height, y } = generatePipeExtension(index, draft);
-  
-          // Calculate the new position for the pipe
-          const previousPipe = draft.pipes[(index - 1 + draft.pipes.length) % draft.pipes.length];
-          const newPositionX = previousPipe.top.position.x + pipeWidth + pipeGap;
-  
-          // Set new positions
+
+          const previousPipe =
+            draft.pipes[(index - 1 + draft.pipes.length) % draft.pipes.length];
+          const newPositionX =
+            previousPipe.top.position.x + pipeWidth + pipeGap;
+
           pipe.top.position.x = newPositionX;
           pipe.bottom.position.x = newPositionX;
           pipe.top.size.height = height;
@@ -262,54 +267,17 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
           pipe.top.passed = false;
           pipe.bottom.passed = false;
         }
-  
-        // Move the pipes
+
         pipe.top.position.x -= draft.pipe.distance;
         pipe.bottom.position.x -= draft.pipe.distance;
       });
-  
+
       return draft;
     });
   };
 
-  // Window Functions
   const handleWindowClick = () => {
-    if (state.isStarted) {
-      fly();
-    } else {
-      setState((draft) => {
-        draft.isStarted = true;
-        draft.rounds.push({
-          score: 0,
-          datetime: new Date().toISOString(),
-          key: v4(),
-        });
-        draft.bird.isFlying = true;
-        setBirdCenter(draft);
-        createPipes(draft);
-        return draft;
-      });
-    }
-  };
-  // Bird Functions
-  const setBirdCenter = (draft: StateDraft) => {
-    draft.bird.position.x = draft.window.width / 2 - draft.bird.size.width / 2;
-    draft.bird.position.y =
-      draft.window.height / 2 - draft.bird.size.height / 2;
-    draft.bird.initial.x = draft.bird.position.x;
-    draft.bird.initial.y = draft.bird.position.y;
-  };
-  const getNextFrame = () =>
-    setState((draft) => {
-      var next = (draft.bird.frameIndex + 1) % FRAMES.length;
-      draft.bird.frame = FRAMES[next];
-      draft.bird.frameIndex = next;
-      return draft;
-    });
-
-    const handleContinue = () => {
-      setShowModal(false);
-      startGame(state.window); 
+    if (!state.collision) {
       if (state.isStarted) {
         fly();
       } else {
@@ -326,38 +294,86 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
           return draft;
         });
       }
-    };
+    }
+  };
+
+  const setBirdCenter = (draft: StateDraft) => {
+    draft.bird.position.x = draft.window.width / 2 - draft.bird.size.width / 2;
+    draft.bird.position.y =
+      draft.window.height / 2 - draft.bird.size.height / 2;
+    draft.bird.initial.x = draft.bird.position.x;
+    draft.bird.initial.y = draft.bird.position.y;
+  };
+
+  const getNextFrame = () =>
+    setState((draft) => {
+      var next = (draft.bird.frameIndex + 1) % FRAMES.length;
+      draft.bird.frame = FRAMES[next];
+      draft.bird.frameIndex = next;
+      return draft;
+    });
+
+  const handleContinue = () => {
+    setShowModal(false);
+    startGame(state.window);
+    if (state.isStarted) {
+      fly();
+    } else {
+      setState((draft) => {
+        draft.isStarted = true;
+        draft.rounds.push({
+          score: 0,
+          datetime: new Date().toISOString(),
+          key: v4(),
+        });
+        draft.bird.isFlying = true;
+        draft.collision = false;
+        setBirdCenter(draft);
+        createPipes(draft);
+        return draft;
+      });
+    }
+  };
 
   const handleExit = () => {
     setShowModal(false);
   };
+
   const checkImpact = (draft: StateDraft) => {
+    const birdTop = draft.bird.position.y;
+    const birdBottom = draft.bird.position.y + draft.bird.size.height;
+
     const groundImpact =
-      draft.bird.position.y + draft.bird.size.height / 2 >= draft.window.height;
+      birdBottom >= draft.window.height + draft.pipe.tolerance;
+
     const impactablePipes = draft.pipes.filter((pipe) => {
+      const pipeRightEdge = pipe.top.position.x + pipe.top.size.width;
+      const pipeLeftEdge = pipe.top.position.x;
+
       return (
-        pipe.top.position.x <
-          draft.bird.position.x -
-            draft.pipe.tolerance +
-            draft.bird.size.width / 2 &&
-        pipe.top.position.x + pipe.top.size.width >
-          draft.bird.position.x + draft.pipe.tolerance - draft.bird.size.width / 2
+        pipeRightEdge > draft.bird.position.x &&
+        pipeLeftEdge < draft.bird.position.x + draft.bird.size.width
       );
     });
+
     const pipeImpact = impactablePipes.some((pipe) => {
-      const topPipe = pipe.top.position.y + pipe.top.size.height;
-      const bottomPipe = pipe.bottom.position.y;
-      const birdTop = draft.bird.position.y + draft.bird.size.height / 2;
-      const birdBottom =
-        draft.bird.position.y + draft.bird.size.height / 2 - draft.pipe.tolerance;
-      return birdTop < topPipe || birdBottom > bottomPipe;
+      const topPipeBottom = pipe.top.position.y + pipe.top.size.height;
+      const bottomPipeTop = pipe.bottom.position.y;
+
+      return birdTop < topPipeBottom || birdBottom > bottomPipeTop;
     });
-  
+
     if (groundImpact || pipeImpact) {
       draft.bird.isFlying = false;
       draft.isStarted = false;
-      draft.bird.isVisible = false; // Hide the bird
-      setShowModal(true);
+      draft.collision = true;
+      draft.bird.animate.rotate = [0, 90];
+      draft.bird.position.x = draft.bird.initial.x;
+      draft.bird.position.y = draft.window.height - draft.bird.size.height;
+
+      setTimeout(() => {
+        setShowModal(true);
+      }, 2000);
     } else {
       draft.bird.animate.rotate = [0, 0];
     }
@@ -365,10 +381,9 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fly = () => {
     setState((draft) => {
-      draft.bird.position.y -= draft.bird.fly.distance;
       draft.bird.isFlying = true;
       checkImpact(draft);
-      
+      draft.bird.position.y -= draft.bird.fly.distance;
       return draft;
     });
   };
@@ -376,12 +391,12 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const fall = () => {
     setState((draft) => {
       draft.bird.isFlying = true;
-      draft.bird.position.y += draft.bird.fall.distance;
       checkImpact(draft);
-      
+      draft.bird.position.y += draft.bird.fall.distance;
       return draft;
     });
   };
+
   return (
     <GameContext.Provider
       value={{

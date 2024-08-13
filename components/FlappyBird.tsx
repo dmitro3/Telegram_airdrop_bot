@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import useGame from "../hooks/useGame";
 import useInterval from "../hooks/useInterval";
+
 export function Bird() {
   const {
     bird: {
@@ -25,6 +26,7 @@ export function Bird() {
     />
   );
 }
+
 export default function FlappyBird() {
   const {
     isStarted,
@@ -32,10 +34,14 @@ export default function FlappyBird() {
       fall: { delay },
       position,
       animate,
+      isFlying,
     },
     fall,
   } = useGame();
   useInterval(() => fall(), isStarted ? delay : null);
+
+  const fallDuration = isFlying ? 0.15 : 2;
+
   return (
     <motion.div
       className={`m-auto absolute z-40 ${
@@ -50,7 +56,7 @@ export default function FlappyBird() {
       }}
       transition={{
         ease: "easeOut",
-        duration: 0.15,
+        duration: fallDuration,
       }}
     >
       <Bird />

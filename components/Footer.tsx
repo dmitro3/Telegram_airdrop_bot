@@ -16,7 +16,7 @@ export default function Footer() {
         },
         transition: {
           repeat: Infinity,
-          duration: 0.5,
+          duration: 0.2,
           repeatType: "loop" as "loop",
           ease: "linear",
         },
