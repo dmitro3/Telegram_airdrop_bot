@@ -40,7 +40,7 @@ export default function FlappyBird() {
   } = useGame();
   useInterval(() => fall(), isStarted ? delay : null);
 
-  const fallDuration = isFlying ? 0.15 : 2;
+  const fallDuration = isFlying ? 0.15 : 2.3;
 
   return (
     <motion.div

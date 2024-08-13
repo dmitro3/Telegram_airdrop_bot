@@ -47,7 +47,7 @@ const defaultState = {
         key: "bottom" + index,
         position: { x: 0, y: 0 },
         initial: {
-          x: 0,
+          x: 0, 
           y: 0,
         },
         size: { width: 0, height: 0 },
@@ -367,13 +367,23 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       draft.bird.isFlying = false;
       draft.isStarted = false;
       draft.collision = true;
+      
+      // Make the bird rotate immediately upon collision
       draft.bird.animate.rotate = [0, 90];
-      draft.bird.position.x = draft.bird.initial.x;
-      draft.bird.position.y = draft.window.height - draft.bird.size.height;
-     
+
       setTimeout(() => {
-        setShowModal(true);
-      }, 2000);
+        // After 1 second, make the bird fall to the ground
+        setState((innerDraft) => {
+          innerDraft.bird.position.x = innerDraft.bird.initial.x;
+          innerDraft.bird.position.y =
+            innerDraft.window.height - innerDraft.bird.size.height;
+          return innerDraft;
+        });
+
+        setTimeout(() => {
+          setShowModal(true);
+        }, 1970); // Show the modal after the bird falls
+      }, 30); // Delay for 1 second before the bird falls
     } else {
       draft.bird.animate.rotate = [0, 0];
     }
