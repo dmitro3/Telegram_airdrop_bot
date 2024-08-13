@@ -360,7 +360,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       const topPipeBottom = pipe.top.position.y + pipe.top.size.height;
       const bottomPipeTop = pipe.bottom.position.y;
 
-      return birdTop < topPipeBottom || birdBottom > bottomPipeTop;
+      return birdTop + 20 < topPipeBottom || birdBottom > bottomPipeTop;
     });
 
     if (groundImpact || pipeImpact) {
@@ -370,9 +370,9 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       draft.bird.animate.rotate = [0, 90];
       draft.bird.position.x = draft.bird.initial.x;
       draft.bird.position.y = draft.window.height - draft.bird.size.height;
-
+     
       setTimeout(() => {
-        setShowModal(true); 
+        setShowModal(true);
       }, 2000);
     } else {
       draft.bird.animate.rotate = [0, 0];
