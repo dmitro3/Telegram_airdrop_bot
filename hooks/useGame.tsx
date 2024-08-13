@@ -30,7 +30,7 @@ const defaultState = {
       delay: 0,
     },
   },
-  pipes: Array(4)
+  pipes: Array(6)
     .fill("")
     .map((_, index) => ({
       top: {
@@ -182,12 +182,12 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const createPipes = (draft: StateDraft) => {
     const window = draft.window;
-    const pipeGap = (1 / 5) * window.width; // Adjust this value to control the gap between pipes
+    const pipeGap = (1 / 3) * window.width; // Adjust this value to control the gap between pipes
     const pipeWidth = window.width / draft.pipes.length; // Width of each pipe
 
     draft.pipe.width = pipeWidth;
-    draft.pipe.height = (1 / 3) * window.height; // Height of the pipe
-    draft.pipe.extension = (0.5 / 3) * window.height; // Extension for pipe height
+    draft.pipe.height = (0.3) * window.height; // Height of the pipe
+    draft.pipe.extension = (0.5 / 6) * window.height; // Extension for pipe height
 
     draft.pipes.forEach((pipe, index) => {
       const { height, y } = generatePipeExtension(index, draft);
@@ -227,37 +227,47 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   const movePipes = () => {
     setState((draft) => {
+      const windowWidth = draft.window.width;
+      const pipeGap = (1 / 3) * windowWidth; // Gap between pipes
+      const pipeWidth = draft.pipe.width;
+      
       draft.pipes.forEach((pipe, index) => {
         const birdPassedPipe =
           pipe.top.position.x + pipe.top.size.width < draft.bird.position.x;
-
+  
         // If the bird passes the pipe and the score hasn't been increased for this pipe yet
         if (birdPassedPipe && !pipe.top.passed) {
           increaseScore(draft);
           multiplySpeed(draft);
-          pipe.top.passed = true; // Mark this pipe as passed
-          pipe.bottom.passed = true; // Ensure the bottom pipe is also marked as passed
+          pipe.top.passed = true;
+          pipe.bottom.passed = true;
         }
-
+  
         // Reset pipe position when it moves out of the window
         if (pipe.top.position.x + pipe.top.size.width <= 0) {
           const { height, y } = generatePipeExtension(index, draft);
-          pipe.top.position.x = draft.pipe.width * 2 + draft.window.width;
-          pipe.bottom.position.x = draft.pipe.width * 2 + draft.window.width;
+  
+          // Calculate the new position for the pipe
+          const previousPipe = draft.pipes[(index - 1 + draft.pipes.length) % draft.pipes.length];
+          const newPositionX = previousPipe.top.position.x + pipeWidth + pipeGap;
+  
+          // Set new positions
+          pipe.top.position.x = newPositionX;
+          pipe.bottom.position.x = newPositionX;
           pipe.top.size.height = height;
           pipe.bottom.size.height = height;
           pipe.bottom.position.y = y;
           pipe.top.key = v4();
           pipe.bottom.key = v4();
-          pipe.top.passed = false; // Reset the passed state for the new pipe
-          pipe.bottom.passed = false; // Reset the passed state for the new pipe
+          pipe.top.passed = false;
+          pipe.bottom.passed = false;
         }
-
+  
         // Move the pipes
         pipe.top.position.x -= draft.pipe.distance;
         pipe.bottom.position.x -= draft.pipe.distance;
       });
-
+  
       return draft;
     });
   };
