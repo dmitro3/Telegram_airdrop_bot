@@ -372,7 +372,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       draft.bird.position.y = draft.window.height - draft.bird.size.height;
 
       setTimeout(() => {
-        setShowModal(true);
+        setShowModal(true); 
       }, 2000);
     } else {
       draft.bird.animate.rotate = [0, 0];
