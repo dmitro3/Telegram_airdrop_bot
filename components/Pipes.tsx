@@ -25,6 +25,7 @@ export default function Pipes() {
             className="absolute"
             transition={{
               ease: "easeOut",
+              duration: 0.1
             }}
           >
             <Pipe />
@@ -37,6 +38,7 @@ export default function Pipes() {
             className="absolute"
             transition={{
               ease: "easeOut",
+              duration: 0.1
             }}
           >
             <Pipe />
