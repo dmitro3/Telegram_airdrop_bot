@@ -40,7 +40,7 @@ export default function FlappyBird() {
     <motion.div
       className={`m-auto absolute z-40 ${
         !isStarted && "animate-pulse"
-      } h-10 w-10`}
+      }  w-10`}
       style={{
         ...position,
       }}
