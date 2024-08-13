@@ -23,6 +23,7 @@ const defaultState = {
       y: 0,
     },
     isFlying: true,
+    isVisible: true,
     fall: { distance: 20, delay: 100 },
     fly: { distance: 100 },
     flap: {
@@ -110,6 +111,7 @@ interface GameState {
     frameIndex: number;
     initial: Coordinates;
     isFlying: boolean;
+    isVisible: boolean;
     fall: {
       distance: number;
       delay: number;
@@ -153,6 +155,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     setState((draft) => {
       draft.window = window;
       draft.isReady = true;
+      draft.bird.isVisible = true; // Reset visibility when starting the game
       setBirdCenter(draft);
       createPipes(draft);
       return draft;
@@ -328,9 +331,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
             draft.pipe.tolerance +
             draft.bird.size.width / 2 &&
         pipe.top.position.x + pipe.top.size.width >
-          draft.bird.position.x +
-            draft.pipe.tolerance -
-            draft.bird.size.width / 2
+          draft.bird.position.x + draft.pipe.tolerance - draft.bird.size.width / 2
       );
     });
     const pipeImpact = impactablePipes.some((pipe) => {
@@ -338,16 +339,15 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       const bottomPipe = pipe.bottom.position.y;
       const birdTop = draft.bird.position.y + draft.bird.size.height / 2;
       const birdBottom =
-        draft.bird.position.y +
-        draft.bird.size.height / 2 -
-        draft.pipe.tolerance;
+        draft.bird.position.y + draft.bird.size.height / 2 - draft.pipe.tolerance;
       return birdTop < topPipe || birdBottom > bottomPipe;
     });
+  
     if (groundImpact || pipeImpact) {
       draft.bird.isFlying = false;
       draft.isStarted = false;
+      draft.bird.isVisible = false; // Hide the bird
       setShowModal(true);
-      draft.bird.animate.rotate = [0, 90];
     } else {
       draft.bird.animate.rotate = [0, 0];
     }

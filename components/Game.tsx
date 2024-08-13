@@ -10,11 +10,13 @@ import Pipes from "./Pipes";
 import useElementSize from "../hooks/useElementSize";
 import NowScore from "./Nowscore";
 import _ from "lodash";
+
 export default function Game() {
-  const { handleWindowClick, startGame, isReady, rounds } = useGame();
+  const { handleWindowClick, startGame, isReady, rounds, bird } = useGame(); // Destructure `bird`
 
   const score = _.last(rounds)?.score || 0;
   const [ref, window] = useElementSize();
+
   useEffect(() => {
     if (window.width > 0 && window.height > 0) {
       startGame(window);
@@ -32,9 +34,9 @@ export default function Game() {
       >
         {isReady && (
           <>
-              <NowScore />
-              <Pipes />
-              <FlappyBird />
+            <NowScore />
+            <Pipes />
+            {bird.isVisible && <FlappyBird />} {/* Conditionally render the bird */}
           </>
         )}
       </motion.div>
