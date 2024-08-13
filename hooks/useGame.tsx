@@ -360,7 +360,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       const topPipeBottom = pipe.top.position.y + pipe.top.size.height;
       const bottomPipeTop = pipe.bottom.position.y;
 
-      return birdTop + 20 < topPipeBottom || birdBottom > bottomPipeTop;
+      return birdTop + 40 < topPipeBottom || birdBottom - 20 > bottomPipeTop;
     });
 
     if (groundImpact || pipeImpact) {
