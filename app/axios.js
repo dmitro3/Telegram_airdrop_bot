@@ -1,7 +1,7 @@
 import axios from 'axios';
-// console.log('nextapiurl',process.env["NEXT_PUBLIC_API_URL"])
-const instance = axios.create({
-  baseURL: process.env["NEXT_PUBLIC_API_URL"]
+
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:3003',
 });
 
-export default instance;
+export default axiosInstance;

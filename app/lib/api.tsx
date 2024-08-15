@@ -1,6 +1,8 @@
 import axios from "@/app/axios";
 
 export const updateItem = async (id: any, mount: number) => {
+
+  console.log(id, mount);
   try {
     const response = await axios.put(`/users`, { user: id, mount });
     return response.data;

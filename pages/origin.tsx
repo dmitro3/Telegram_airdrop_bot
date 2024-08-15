@@ -4,9 +4,15 @@ import React, { useState, useEffect } from "react";
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import axios from "@/app/axios";
+import { updateItem } from "../app/lib/api";
+import * as idleAnim from "../app/animations/Ghost_Idle.json";
+import * as eatAnim from "../app/animations/Ghost_Eat.json";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "@/redux/reducers/TaskReducer";
 import fs from "fs";
 import path from "path";
 import Link from "next/link";
+import { NextResponse } from "next/server";
 
 interface Game {
   level: number;
@@ -23,11 +29,13 @@ interface IndexProps {
 }
 
 const Index: React.FC<IndexProps> = ({ data }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((x: any) => x.TaskReducer.user);
   const [count, setCount] = useState<number>(0);
-  const [profit, setProfit] = useState<number>(1);
+  const [profit, setprofit] = useState<number>(1);
   const [Games, setGames] = useState<Game[]>(data.games);
   const [mount, setMount] = useState<number>(1000);
-  const [lvlcoin, setLvlcoin] = useState<number>(5000);
+  const [lvlcoin, setlvlcoin] = useState<number>(5000);
   const [tap, settap] = useState<number>(1);
   const [alert, setalert] = useState<number>(0);
   const [showAnimation, setShowAnimation] = useState(false);
@@ -36,25 +44,29 @@ const Index: React.FC<IndexProps> = ({ data }) => {
   const router = useRouter();
   const userFromQuery = router.query.user?.toString() || "";
 
-  // Fetch the coin value when the component mounts
-  useEffect(() => {
-    axios
-      .get("/api/coins")
-      .then((response) => {
-        setCount(response.data.coins);
-      })
-      .catch((error) => {
-        console.error("Error fetching coins:", error);
-      });
-  }, []);
-
-  // Function to get the mount value by level
-  const getMountBylevel = (level: number): number => {
+  const getMountBylevel = (level: number): number | number => {
     const item = Games.find((item: Game) => item.level === level);
     return item ? item.mount : 0;
   };
 
-  // Function to get the level info based on the count
+  const defaultOption = {
+    loop: true,
+    autoplay: true,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  const animsOption = {
+    ...defaultOption,
+    animationData: showAnimation ? eatAnim : idleAnim,
+  };
+
+  const handleChange = () => {
+    setShowAnimation(true);
+    setTimeout(() => {
+      setShowAnimation(false);
+    }, 500);
+  };
   const getLevelInfo = () => {
     switch (Math.floor(count / 20)) {
       case 0:
@@ -96,9 +108,20 @@ const Index: React.FC<IndexProps> = ({ data }) => {
     }
   };
 
-  // Handle mouse click to increment coins and send API request to update DB
+  const hello = async () => {
+    const response = await fetch("/api/hello");
+    console.log(response);
+  }
+
   const handleIncrement = (event: React.MouseEvent<HTMLDivElement>) => {
+    let payload: any = [...pulses];
+    payload.push(0);
+    setPulses(payload);
+    // const { clientX, clientY } = event
+    const { userAgent } = window.navigator;
+    // if (!user || !userAgent.includes("Mobi")) return;
     const { clientX, clientY } = event;
+    // console.log("Mouse X: ", clientX, "Mouse Y: ", clientY);
     setMousePosition({ x: clientX, y: clientY });
     setalert(0);
     if (mount < tap) return;
@@ -106,13 +129,14 @@ const Index: React.FC<IndexProps> = ({ data }) => {
     const newCount = count + tap;
     setCount(newCount);
     setMount(mount - tap);
-
-    // Update the coin value in the database
-    axios.post("/api/coins", { coins: newCount }).catch((error) => {
-      console.error("Error updating coins:", error);
-    });
+    if (!showAnimation) handleChange();
+    try {
+      updateItem(user, newCount); // Use the correct item ID here
+      //hello();
+    } catch (error) {
+      console.error("Failed to update item", error);
+    }
   };
-
   useEffect(() => {
     if (mount < 1000) {
       const intervalId = setInterval(() => {
@@ -126,21 +150,38 @@ const Index: React.FC<IndexProps> = ({ data }) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCount((prevCount) => prevCount + profit);
-      const newCount = count + profit;
-      axios.post("/api/coins", { coins: newCount });
-    }, 600000); // Adjust the interval as needed
+    }, 60000); // Adjust the interval as needed
 
     return () => clearInterval(intervalId); // Clean up the interval on unmount
   });
-  // Update the tap value based on the level number
+
   useEffect(() => {
-    settap(getLevelInfo().number);
+    if (userFromQuery) {
+      const func = async () => {
+        const { data } = await axios.post("/users", { user: userFromQuery });
+        dispatch(setUser(data.user));
+      };
+    func();
+    }
+  }, [userFromQuery]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        const { data } = await axios.get("/users");
+        const item = data.find((item: any) => item.tgid === user); // Adjust the condition if needed
+        setCount(item?.mount ?? 0);
+      }
+    };
+    fetchData();
+  }, [user]);
+  useEffect(() => {
+    settap(getLevelInfo().number); // Increase the tap value based on the level number
   }, [count]);
 
-  // Update the level coin value whenever the tap value changes
   useEffect(() => {
     const mountValue = getMountBylevel(tap);
-    setLvlcoin(mountValue);
+    setlvlcoin(mountValue);
   }, [tap]);
 
   return (
@@ -163,7 +204,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
             mousePosition.y - 200 + "px"
           };}
             }
-          `}
+            `}
         </style>
       </div>
       <div className="relative border-t border-[#DFDCD5] flex-1 overflow-x-hidden">

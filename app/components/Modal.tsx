@@ -1,9 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import useGame from "@/hooks/useGame";
 import _ from "lodash";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "../axios";
 
 interface ModalProps {
   show: boolean;
@@ -12,13 +13,46 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ show, onContinue, onExit }) => {
-  
+  const [coinCount, setCoinCount] = useState<number>(0);
   const { rounds } = useGame();
 
-  const score = _.last(rounds)?.score || 0;
-  const best = _.maxBy(rounds, "score")?.score || 0;
-    
+
+  const score = _.last(rounds)?.score || 0; // Current score from the latest round
+  const best = _.maxBy(rounds, "score")?.score || 0; // Best score from all rounds
+
+  useEffect(() => {
+    axios
+      .get("/api/coins") // Adjust the endpoint as necessary
+      .then((response) => {
+        setCoinCount(response.data.coins); // Set the coin value from the response
+        console.log(coinCount);
+      })
+      .catch((error) => {
+        console.error("Error fetching coins:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (score > 0) {
+      const updatedCoinCount = coinCount + score; // Add the score to the current coins
+      setCoinCount(updatedCoinCount);
+
+      // Send the updated coin value back to the backend
+      axios
+        .post("/api/coins", { coins: updatedCoinCount })
+        .then((response) => {
+          console.log("Coins updated successfully:", response.data);
+        })
+        .catch((error) => {
+          console.error("Error updating coins:", error);
+        });
+    }
+  }, [score]);
+
+  // Fetch the initial coin value when the component mounts
+  
   if (!show) return null;
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 px-0 flex-col mt-[-100px] select-none">
       <div>
