@@ -16,6 +16,9 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "@prisma/client": "^5.18.0",
     "@reduxjs/toolkit": "^2.2.5",
+    "@tonconnect/ui-react": "^2.0.9",
+    "@walletconnect/client": "^1.8.0",
+    "@walletconnect/web3-provider": "^1.8.0",
     "axios": "^1.6.8",
     "framer-motion": "^11.3.24",
     "mongodb": "^6.8.0",
@@ -31,7 +34,8 @@
     "redux-persist": "^6.0.0",
     "styled-components": "^6.1.11",
     "use-immer": "^0.10.0",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "web3": "^4.11.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.7",
