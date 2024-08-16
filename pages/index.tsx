@@ -30,7 +30,6 @@ const Index: React.FC<IndexProps> = ({ data }) => {
   const [lvlcoin, setLvlcoin] = useState<number>(5000);
   const [tap, settap] = useState<number>(1);
   const [alert, setalert] = useState<number>(0);
-  const [showAnimation, setShowAnimation] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [pulses, setPulses] = useState([]);
   const router = useRouter();
@@ -98,6 +97,9 @@ const Index: React.FC<IndexProps> = ({ data }) => {
 
   // Handle mouse click to increment coins and send API request to update DB
   const handleIncrement = (event: React.MouseEvent<HTMLDivElement>) => {
+    let payload: any = [...pulses];
+    payload.push(0);
+    setPulses(payload);
     const { clientX, clientY } = event;
     setMousePosition({ x: clientX, y: clientY });
     setalert(0);
