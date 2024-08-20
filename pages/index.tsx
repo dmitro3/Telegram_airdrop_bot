@@ -70,7 +70,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
   const getLevelInfo = () => {
     switch (Math.floor(count / 20)) {
       case 0:
-        return { text: "Rookie", number: 1 as number, image: "/images/lvl-1-rookie.png" };
+        return { text: "Rookie", number: 1, image: "/images/lvl-1-rookie.png" };
       case 1:
         return { text: "Bronze", number: 2, image: "/images/lvl-2-bronze.png" };
       case 2:
