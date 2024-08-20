@@ -45,7 +45,7 @@ const Modal: React.FC<ModalProps> = ({ show, onContinue, onExit }) => {
       }
     }
   }, [score]);
-
+ 
   // Fetch the initial coin value when the component mounts
 
   if (!show) return null;
