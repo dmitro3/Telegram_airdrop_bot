@@ -4,9 +4,7 @@ import useGame from "@/hooks/useGame";
 import _ from "lodash";
 import Image from "next/image";
 import Link from "next/link";
-import axios from "axios";
-import { updateItem } from "../lib/api";
-import { useSelector } from "react-redux";
+import axios from "../axios";
 
 interface ModalProps {
   show: boolean;
@@ -15,41 +13,46 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ show, onContinue, onExit }) => {
-  const [count, setCount] = useState<number>(0);
+  const [coinCount, setCoinCount] = useState<number>(0);
   const { rounds } = useGame();
 
-  const user = useSelector((x: any) => x.TaskReducer.user);
 
   const score = _.last(rounds)?.score || 0; // Current score from the latest round
   const best = _.maxBy(rounds, "score")?.score || 0; // Best score from all rounds
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        const { data } = await axios.get("/users");
-        const item = data.find((item: any) => item.tgid === user); // Adjust the condition if needed
-        setCount(item?.mount | 0 as number);
-      }
-    };
-    fetchData();
-  }, [user]);
+    axios
+      .get("/api/coins") // Adjust the endpoint as necessary
+      .then((response) => {
+        setCoinCount(response.data.coins); // Set the coin value from the response
+        console.log(coinCount);
+      })
+      .catch((error) => {
+        console.error("Error fetching coins:", error);
+      });
+  }, []);
 
   useEffect(() => {
     if (score > 0) {
-      const updatedCoinCount = count + score; // Add the score to the current coins
-      setCount(updatedCoinCount);
-      try {
-        updateItem(user, updatedCoinCount); // Use the correct item ID here
-      } catch (error) {
-        console.error("Failed to update item", error);
-      }
+      const updatedCoinCount = coinCount + score; // Add the score to the current coins
+      setCoinCount(updatedCoinCount);
+
+      // Send the updated coin value back to the backend
+      axios
+        .post("/api/coins", { coins: updatedCoinCount })
+        .then((response) => {
+          console.log("Coins updated successfully:", response.data);
+        })
+        .catch((error) => {
+          console.error("Error updating coins:", error);
+        });
     }
   }, [score]);
- 
+
   // Fetch the initial coin value when the component mounts
-
+  
   if (!show) return null;
-
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 px-0 flex-col mt-[-100px] select-none">
       <div>
@@ -61,20 +64,12 @@ const Modal: React.FC<ModalProps> = ({ show, onContinue, onExit }) => {
       <div className="bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[10px] py-5 rounded-[10px] w-[326px] flex flex-col">
         <div className="flex">
           <div className="flex-[50%] flex-col">
-            <p className="flex justify-center items-center text-[#DD523A] font-semibold text-sm">
-              Your Score
-            </p>
-            <p className="flex justify-center items-center text-[#282828] font-bold text-2xl">
-              {score}
-            </p>
+            <p className="flex justify-center items-center text-[#DD523A] font-semibold text-sm">Your Score</p>
+            <p className="flex justify-center items-center text-[#282828] font-bold text-2xl">{score}</p>
           </div>
           <div className="flex-[50%] flex-col border-l-2 border-[#CACACA]">
-            <p className="flex justify-center items-center text-[#DD523A] font-semibold text-sm">
-              Top Score
-            </p>
-            <p className="flex justify-center items-center text-[#282828] font-bold text-2xl">
-              {best}
-            </p>
+            <p className="flex justify-center items-center text-[#DD523A] font-semibold text-sm">Top Score</p>
+            <p className="flex justify-center items-center text-[#282828] font-bold text-2xl">{best}</p>
           </div>
         </div>
         <div className="flex gap-[10px] pt-5">
