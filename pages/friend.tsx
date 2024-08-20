@@ -20,12 +20,12 @@ function Friend() {
         else setItems(response.data.items);
       }
     };
-    //fetchData();
+    fetchData();
   }, [user]);
 
   const handleInviteClick = async () => {
     // Generate the invite link
-    const inviteLink = `https://t.me/fatso_demo_bot?start=${user}\nPlay with me, become cryptoexchange CEO and get a token airdrop`;
+    const inviteLink = `https://t.me/Chirpley_Bot?start=${user}\nPlay with me, become cryptoexchange CEO and get a token airdrop`;
     console.log(inviteLink);
 
     // Show the invite link in a snackbar or modal
@@ -117,9 +117,12 @@ function Friend() {
               </div>
             </div>
           </div>
-          <div className="bg-gradient-to-b from-[#FFAB07] to-[#E76116] shadow-[0px_2px_0px_0px_#DC6E09] border border-[#FF8A00] text-sm text-white rounded-[5px] text-center min-w-[72px] py-[5px]">
+          <button
+            className="bg-gradient-to-b from-[#FFAB07] to-[#E76116] shadow-[0px_2px_0px_0px_#DC6E09] border border-[#FF8A00] text-sm text-white rounded-[5px] text-center min-w-[72px] py-[5px]"
+            onClick={handleInviteClick}
+          >
             Lets Go!
-          </div>
+          </button>
         </div>
         <div className="flex justify-between items-center bg-white border border-[#E3E3E3] rounded-[10px] p-[10px] space-x-5">
           <div className="flex items-center gap-[10px]">
@@ -159,10 +162,12 @@ function Friend() {
             <div className="font-medium text-[14px] text-[#DD523A] mt-3 mb-[25px]">
               You haven&apos;t invited anyone yet
             </div>
-            <p className="py-3 px-5 bg-gradient-to-b from-[#FFAB07] to-[#E76116] shadow-[0px_2px_0px_0px_#DC6E09] border border-[#FF8A00] text-white rounded-[10px] text-center">
+            <button
+              className="py-3 px-5 bg-gradient-to-b from-[#FFAB07] to-[#E76116] shadow-[0px_2px_0px_0px_#DC6E09] border border-[#FF8A00] text-white rounded-[10px] text-center"
+              onClick={handleInviteClick}
+            >
               Invite a friend
-            </p>
-            {/* <img className="w-[186px] mx-auto" src="/images/crying.svg" /> */}
+            </button>
           </div>
         ) : (
           <div className="mb-[100px]">
