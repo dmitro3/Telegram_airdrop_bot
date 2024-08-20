@@ -120,7 +120,7 @@ function Card({ title, description, price, link, img, onLoad }: CardProps) {
               <a
                 ref={forceRef}
                 className="text-black opacity-0"
-                target="_self"
+                target="_blank"
                 href={link}
               >
                 dd

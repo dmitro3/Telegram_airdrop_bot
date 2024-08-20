@@ -70,7 +70,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
   const getLevelInfo = () => {
     switch (Math.floor(count / 20)) {
       case 0:
-        return { text: "Rookie", number: 1, image: "/images/lvl-1-rookie.png" };
+        return { text: "Rookie", number: 1 as number, image: "/images/lvl-1-rookie.png" };
       case 1:
         return { text: "Bronze", number: 2, image: "/images/lvl-2-bronze.png" };
       case 2:
@@ -121,13 +121,12 @@ const Index: React.FC<IndexProps> = ({ data }) => {
     setalert(0);
     if (mount < tap) return;
     setalert(1);
-    const newCount = count + tap;
+    const newCount: number = count + tap;
     setCount(newCount);
     setMount(mount - tap);
     if (!showAnimation) handleChange();
     try {
       updateItem(user, newCount); // Use the correct item ID here
-      //hello();
     } catch (error) {
       console.error("Failed to update item", error);
     }
@@ -148,7 +147,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
         const { data } = await axios.post("/users", { user: userFromQuery });
         dispatch(setUser(data.user));
       };
-    func();
+      func();
     }
   }, [userFromQuery]);
 
@@ -157,7 +156,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
       if (user) {
         const { data } = await axios.get("/users");
         const item = data.find((item: any) => item.tgid === user); // Adjust the condition if needed
-        setCount(item?.mount ?? 0);
+        setCount(item?.mount | 0 as number);
       }
     };
     fetchData();

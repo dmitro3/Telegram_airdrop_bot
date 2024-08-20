@@ -13,7 +13,7 @@ export default function Pipes() {
   return (
     <>
       {pipesArray.map((pipes, index) => (
-        <>
+        <div key={index}>
           <motion.div
             key={pipes.top.key}
             initial={pipes.top.initial}
@@ -43,7 +43,7 @@ export default function Pipes() {
           >
             <Pipe />
           </motion.div>
-        </>
+        </div>
       ))}
     </>
   );
