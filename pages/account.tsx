@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useSelector } from "react-redux";
-import { useTonConnectUI } from "@tonconnect/ui-react";
+import { TonConnectButton } from "@tonconnect/ui-react";
+import { red } from "@mui/material/colors";
 
 function Account() {
   const user = useSelector((x: any) => x.TaskReducer.user);
-  const [tonConnectUi] = useTonConnectUI();
-  
+
   return (
     <div className="flex-1 h-0">
       <div className="pt-[23px] pb-[150px] px-5 text-white rounded-t-3xl border-t border-[#DFDCD5] bg-gradient-to-b from-[#FFF3D8] to-[#F8DFA6] h-full overflow-auto flex flex-col gap-4">
@@ -64,9 +64,9 @@ function Account() {
             <p>My Wallets</p>
           </div>
         </div>
-        <button className="py-4 w-full bg-gradient-to-t from-[#DC6E09] to-[#FF8A00] rounded-[10px] shadow-[0px_2px_0px_0px_#DC6E09]" onClick={() => tonConnectUi.openModal()}>
-          Connect Wallet
-        </button>
+        <div className="flex justify-center">
+          <TonConnectButton />
+        </div>
       </div>
     </div>
   );

@@ -117,14 +117,14 @@ function Card({ title, description, price, link, img, onLoad }: CardProps) {
               <span className="mt-[35px] font-semibold text-[30px] text-[#282828]">
                 {title}
               </span>
-              {/* <a
+              <a
                 ref={forceRef}
                 className="text-black opacity-0"
                 target="_self"
                 href={link}
               >
                 dd
-              </a> */}
+              </a>
               <p className="flex justify-center items-center space-x-[10.61px] mt-[18.5px] font-bold text-[29px] leading-[29px]">
                 <img
                   src="/images/coin.png"

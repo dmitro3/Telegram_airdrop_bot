@@ -28,7 +28,7 @@ const AppWrapper = ({ Component, pageProps }: any) => {
       const { data } = await axios.get("/tasks");
       dispatch(setTasks(data));
     };
-    // func();
+    func();
   }, []);
 
   // return isMobile ? (
