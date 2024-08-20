@@ -37,7 +37,7 @@ const Footer = () => {
             <div>Earn</div>
           </div>
         </Link>
-        <Link href={"/?user=${user}"}>
+        <Link href={`/?user=${user}`}>
           <div
             className={
               "flex flex-col justify-center space-y-1 text-xs h-[64px] text-center rounded-xl items-center " +
