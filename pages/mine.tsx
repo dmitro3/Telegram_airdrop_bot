@@ -45,7 +45,7 @@ function Mine() {
                     <p className="text-[#282828] text-lg font-semibold">
                       @{user}
                     </p>
-                    <img
+                    <img 
                       src="/images/lvl-5-platinum.png"
                       className="w-7 h-7"
                       alt=""
