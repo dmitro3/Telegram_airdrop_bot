@@ -9,10 +9,10 @@ import * as idleAnim from "../app/animations/Ghost_Idle.json";
 import * as eatAnim from "../app/animations/Ghost_Eat.json";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/reducers/TaskReducer";
+import Footer from "@/components/Footer";
 import fs from "fs";
 import path from "path";
 import Link from "next/link";
-import { NextResponse } from "next/server";
 
 interface Game {
   level: number;
@@ -156,7 +156,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
       if (user) {
         const { data } = await axios.get("/users");
         const item = data.find((item: any) => item.tgid === user); // Adjust the condition if needed
-        setCount(item?.mount | 0 as number);
+        setCount(item?.mount | (0 as number));
       }
     };
     fetchData();
@@ -310,7 +310,7 @@ const Index: React.FC<IndexProps> = ({ data }) => {
               <img src="/images/pajamas_information-o.png" alt="" />
             </div>
             <Link
-              href="/flappy"
+              href={`/flappygame`}
               className={`flex items-center space-x-2 bg-gradient-to-b from-[#EEEEEE] to-[#FFFFFF] shadow-[0px_4px_0px_0px_#CACACA] px-[15px] py-[10px] rounded-[10px] ml-auto ${
                 tap > 4 ? "block" : "hidden"
               }`}
@@ -319,6 +319,76 @@ const Index: React.FC<IndexProps> = ({ data }) => {
               <span className="text-[#E3310B]">Game Go</span>
             </Link>
           </div>
+        </div>
+      </div>
+      <div className="flex justify-center absolute left-[20px] bottom-[20px] z-[100] w-[calc(100%-40px)]">
+        <div className="grid grid-cols-5 justify-center mt-auto shadow-[0px_4px_0px_0px_#CACACA] bg-white py-[10px] px-[9px] gap-[6px] w-full font-medium text-[12px] rounded-[25px]">
+          <Link href={`/mine`}>
+            <div
+              className={
+                "flex flex-col justify-center space-y-1 text-xs h-[64px] text-center rounded-xl items-center " +
+                (router.pathname === "/mine"
+                  ? "text-[#00B2FF]"
+                  : "text-[#A4A4A4]")
+              }
+            >
+              <img src="/images/footer-mine.png" />
+              <div className="text-center">Mine</div>
+            </div>
+          </Link>
+          <Link href={"/earn"}>
+            <div
+              className={
+                "flex flex-col justify-center space-y-1 text-xs h-[64px] text-center rounded-xl items-center " +
+                (router.pathname === "/earn"
+                  ? "text-[#00B2FF]"
+                  : "text-[#A4A4A4]")
+              }
+            >
+              <img src="/images/footer-earn.png" />
+              <div>Earn</div>
+            </div>
+          </Link>
+          <Link href={`/?user=${user}`}>
+            <div
+              className={
+                "flex flex-col justify-center space-y-1 text-xs h-[64px] text-center rounded-xl items-center " +
+                (router.pathname === "/" ? "text-[#00B2FF]" : "text-[#A4A4A4]")
+              }
+            >
+              <img
+                src="/images/footer-game.png"
+                className="mt-[-25px] w-[75px] h-[75px]"
+              />
+              <div>Game</div>
+            </div>
+          </Link>
+          <Link href={"/friend"}>
+            <div
+              className={
+                "flex flex-col justify-center space-y-1 text-xs h-[64px] text-center rounded-xl items-center " +
+                (router.pathname === "/friend"
+                  ? "text-[#00B2FF]"
+                  : "text-[#A4A4A4]")
+              }
+            >
+              <img src="/images/footer-friend.png" />
+              <div>Friends</div>
+            </div>
+          </Link>
+          <Link href={"/account"}>
+            <div
+              className={
+                "flex flex-col justify-center space-y-1 text-xs h-[64px] text-center rounded-xl items-center " +
+                (router.pathname === "/account"
+                  ? "text-[#00B2FF]"
+                  : "text-[#A4A4A4]")
+              }
+            >
+              <img src="/images/footer-account.png" />
+              <div>Account</div>
+            </div>
+          </Link>
         </div>
       </div>
     </>

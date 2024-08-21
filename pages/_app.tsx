@@ -152,7 +152,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <SnackbarProvider>
             {/* <Header /> */}
             <AppWrapper Component={Component} pageProps={pageProps} />
-            <Footer />
+            {/* <Footer /> */}
           </SnackbarProvider>
         </PersistGate>
       </StoreProvider>
