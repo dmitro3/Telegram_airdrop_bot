@@ -43,7 +43,7 @@ function Mine() {
                 <div>
                   <div className="flex items-center gap-2">
                     <p className="text-[#282828] text-lg font-semibold">
-                      Johndoe
+                      @{user}
                     </p>
                     <img
                       src="/images/lvl-5-platinum.png"

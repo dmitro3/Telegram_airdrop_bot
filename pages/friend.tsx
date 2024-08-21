@@ -14,7 +14,6 @@ function Friend() {
   const user = useSelector((x: any) => x.TaskReducer.user);
   const router = useRouter();
   const userFromQuery = router.query.user?.toString() || "";
-  console.log("user-->", user);
   const [items, setItems] = useState<Item[]>([]);
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
