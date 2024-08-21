@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Topheader from "./Topheader";
 
 import Tabs from "@/app/components/tabs";
 import Card from "@/app/components/common/card";
@@ -32,40 +33,7 @@ function Mine() {
     <>
       <div className="flex-1 h-0">
         <div className="pt-[23px] pb-[150px] px-5 text-white rounded-t-3xl border-t border-[#DFDCD5] bg-gradient-to-b from-[#FFF3D8] to-[#F8DFA6] h-full overflow-auto flex flex-col gap-5">
-          <div className="bg-gradient-to-b from-[#FFFFFF] to-[#F2F2F2] shadow-[0px_4px_0px_0px_#CACACA] border border-[#FFFFFF] p-[10px] rounded-[10px] flex flex-col gap-[10px]">
-            <div className="flex justify-between">
-              <div className="flex gap-1">
-                <img
-                  src="/images/john-doe.png"
-                  className="w-[50px] h-[50px]"
-                  alt=""
-                />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="text-[#282828] text-lg font-semibold">
-                      {user}
-                    </p>
-                    <img 
-                      src="/images/lvl-5-platinum.png"
-                      className="w-7 h-7"
-                      alt=""
-                    />
-                  </div>
-                  <p className="text-[#DD523A] text-sm">Level 5</p>
-                </div>
-              </div>
-              <div className="flex gap-1 items-center">
-                <img src="/images/coin.png" alt="" className="w-7 h-7" />
-                <p className="bg-gradient-to-b from-[#FED953] to-[#FFC700] text-transparent bg-clip-text stroke-1 stroke-[#CF6100] text-xl font-extrabold">
-                  100,400
-                </p>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="w-full h-[5px] rounded-[25px] bg-[#E8442433]"></div>
-              <div className="absolute top-0 left-0 w-4/5 h-[5px] rounded-[25px] bg-[#E84424]"></div>
-            </div>
-          </div>
+          <Topheader />
           <div className="flex justify-end gap-1">
             <p className="text-[#DD523A]">
               Time left : <span className="font-semibold">15:42:12</span>

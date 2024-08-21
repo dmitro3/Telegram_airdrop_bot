@@ -1,15 +1,106 @@
 "use Client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { TonConnectButton } from "@tonconnect/ui-react";
 import { useRouter } from "next/router";
+import axios from "@/app/axios";
 import { red } from "@mui/material/colors";
 
 function Account() {
   const router = useRouter();
   const user = useSelector((x: any) => x.TaskReducer.user);
   const userFromQuery = router.query.user?.toString() || "";
+  const [count, setCount] = useState<number>(0);
+
+  const getLevelInfo = () => {
+    switch (Math.floor(count / 20)) {
+      case 0:
+        return {
+          text: "Rookie",
+          number: 1,
+          image: "/images/lvl-1-rookie.png",
+          lvlcoin: 20,
+        };
+      case 1:
+        return {
+          text: "Bronze",
+          number: 2,
+          image: "/images/lvl-2-bronze.png",
+          lvlcoin: 20,
+        };
+      case 2:
+        return {
+          text: "Silver",
+          number: 3,
+          image: "/images/lvl-3-silver.png",
+          lvlcoin: 20,
+        };
+      case 3:
+        return {
+          text: "Gold",
+          number: 4,
+          image: "/images/lvl-4-gold.png",
+          lvlcoin: 20,
+        };
+      case 4:
+        return {
+          text: "Platinum",
+          number: 5,
+          image: "/images/lvl-5-platinum.png",
+          lvlcoin: 20,
+        };
+      case 5:
+        return {
+          text: "Diamond",
+          number: 6,
+          image: "/images/lvl-6-diamond.png",
+          lvlcoin: 20,
+        };
+      case 6:
+        return {
+          text: "Master",
+          number: 7,
+          image: "/images/lvl-7-master.png",
+          lvlcoin: 20,
+        };
+      case 7:
+        return {
+          text: "Grand Master",
+          number: 8,
+          image: "/images/lvl-8-grand-master.png",
+          lvlcoin: 20,
+        };
+      case 8:
+        return {
+          text: "Lord",
+          number: 9,
+          image: "/images/lvl-9-lord.png",
+          lvlcoin: 20,
+        };
+      default:
+        return {
+          text: "Legendary",
+          number: 10,
+          image: "/images/lvl-10-legendary.png",
+          lvlcoin: 20,
+        };
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        const { data } = await axios.get("/users");
+        const item = data.find((item: any) => item.tgid === user); // Adjust the condition if needed
+        setCount(item?.mount | (0 as number));
+      }
+    };
+    fetchData();
+  }, [user]);
+
+  const levelInfo = getLevelInfo();
 
   return (
     <>
@@ -17,12 +108,12 @@ function Account() {
         <div className="pt-[23px] pb-[150px] px-5 text-white rounded-t-3xl border-t border-[#DFDCD5] bg-gradient-to-b from-[#FFF3D8] to-[#F8DFA6] h-full overflow-auto flex flex-col gap-4">
           <img src="/images/john-doe.png" className="mx-auto" alt="" />
           <p className="font-bold text-[42px] text-center text-[#282828]">
-            John Doe
+            {user}
           </p>
           <div className="flex gap-1 justify-center">
             <img src="/images/coin.png" alt="" />
             <p className="text-5xl bg-gradient-to-b from-[#FED953] to-[#FFC700] text-transparent bg-clip-text stroke-1 stroke-[#CF6100]">
-              123,214
+              {count}
             </p>
           </div>
           <div className="flex px-[10px] py-[20px] justify-around bg-gradient-to-t from-[#EEEEEE] to-[#FFFFFF] rounded-[10px] shadow-[0px_4px_0px_0px_#CACACA]">
@@ -35,11 +126,13 @@ function Account() {
             <div className="w-[1px] h-full bg-[#CACACA]"></div>
             <div className="text-center flex flex-col justify-between">
               <p className="text-[#DD523A] font-semibold text-sm">
-                Game Level 5
+                Game Level {levelInfo.number}
               </p>
               <div className="flex gap-1 items-end">
-                <img src="/images/lvl-5-platinum.png" alt="" />
-                <p className="text-[#5B586A] font-semibold text-lg">Platinum</p>
+                <img src={levelInfo.image} alt="" />
+                <p className="text-[#5B586A] font-semibold text-lg">
+                  {levelInfo.text}
+                </p>
               </div>
             </div>
             <div className="w-[1px] h-full bg-[#CACACA]"></div>
