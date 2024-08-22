@@ -74,13 +74,13 @@ function Friend() {
           </button>
         </div> */}
         <div className="flex justify-between items-center bg-white border border-[#E3E3E3] rounded-[10px] p-[10px] space-x-5">
-          <div className="flex items-center gap-[10px]">
+          <div className="flex items-center gap-[10px] ml-8">
             <img
               src="/images/icon-friend.png"
               className="w-[56px] h-[56px]"
               alt="gift"
             ></img>
-            <div className="text-white text-sm font-normal flex flex-col space-y-2">
+            <div className="text-white text-sm font-normal flex flex-col space-y-2 ml-10">
               <p className="font-semibold text-[14px] text-[#282828]">
                 Invite a friend
               </p>
@@ -96,21 +96,15 @@ function Friend() {
               </div>
             </div>
           </div>
-          <button
-            className="bg-gradient-to-b from-[#FFAB07] to-[#E76116] shadow-[0px_2px_0px_0px_#DC6E09] border border-[#FF8A00] text-sm text-white rounded-[5px] text-center min-w-[72px] py-[5px]"
-            onClick={handleInviteClick}
-          >
-            Lets Go!
-          </button>
         </div>
         <div className="flex justify-between items-center bg-white border border-[#E3E3E3] rounded-[10px] p-[10px] space-x-5">
-          <div className="flex items-center gap-[10px]">
+          <div className="flex items-center gap-[10px] ml-8">
             <img
               src="/images/icon-telegram.png"
               className="w-[56px] h-[56px]"
               alt="gift"
             ></img>
-            <div className="text-white text-sm flex flex-col space-y-2">
+            <div className="text-white text-sm flex flex-col space-y-2 ml-10">
               <p className="font-semibold text-[14px] text-[#282828]">
                 Invite a friend with Telegram Premium
               </p>
@@ -125,9 +119,6 @@ function Friend() {
                 </div>
               </div>
             </div>
-          </div>
-          <div className="bg-gradient-to-b from-[#FFD600] to-[#E8B500] shadow-[0px_2px_0px_0px_#E5B300] border border-[#FFF965] text-sm text-white rounded-[5px] text-center min-w-[72px] py-[5px]">
-            CLAIM
           </div>
         </div>
         <button
