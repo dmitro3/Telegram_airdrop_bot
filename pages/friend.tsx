@@ -45,6 +45,13 @@ function Friend() {
     window.open(shareLink, "_blank");
   };
 
+  const handleMoreBonusesClick = () => {
+    router.push({
+      pathname: "/earn",
+      query: { activeTabState: 1 },
+    });
+  };
+
   return (
     <>
       <div className="flex flex-col gap-5 px-5 pt-[23px] pb-[150px] rounded-t-3xl border-t border-[#DFDCD5] bg-gradient-to-b from-[#FFF3D8] to-[#F8DFA6] flex-1 h-0 overflow-auto">
@@ -123,9 +130,12 @@ function Friend() {
             CLAIM
           </div>
         </div>
-        <p className="py-3 bg-gradient-to-b from-[#FFAB07] to-[#E76116] shadow-[0px_2px_0px_0px_#DC6E09] border border-[#FF8A00] text-white rounded-[10px] text-center">
+        <button
+          className="py-3 bg-gradient-to-b from-[#FFAB07] to-[#E76116] shadow-[0px_2px_0px_0px_#DC6E09] border border-[#FF8A00] text-white rounded-[10px] text-center"
+          onClick={handleMoreBonusesClick}
+        >
           More Bonuses
-        </p>
+        </button>
         <div className="font-medium text-black mt-[43px]">
           List of your friends
         </div>

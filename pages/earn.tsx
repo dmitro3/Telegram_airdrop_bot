@@ -1,6 +1,6 @@
 "use Client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -16,8 +16,15 @@ function Earn() {
   const router = useRouter();
   const user = useSelector((x: any) => x.TaskReducer.user);
   const userFromQuery = router.query.user?.toString() || "";
+  const { activeTabState } = router.query;
 
   const [activeTab, setActiveTab] = useState(0);
+
+  useEffect(() => {
+    if (activeTabState) {
+      setActiveTab(Number(activeTabState));
+    }
+  }, [activeTabState]);
 
   const handleImageLoad = () => {};
 
