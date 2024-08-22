@@ -13,6 +13,7 @@ function Account() {
   const user = useSelector((x: any) => x.TaskReducer.user);
   const userFromQuery = router.query.user?.toString() || "";
   const [count, setCount] = useState<number>(0);
+  const [avatarUrl, setAvatarUrl] = useState<string>("/images/DefaultAvatar.svg");
 
   const getLevelInfo = () => {
     switch (Math.floor(count / 20)) {
@@ -92,9 +93,14 @@ function Account() {
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
-        const { data } = await axios.get("/users");
-        const item = data.find((item: any) => item.tgid === user); // Adjust the condition if needed
-        setCount(item?.mount | (0 as number));
+        try {
+          const { data } = await axios.get("/users");
+          const item = data.find((item: any) => item.tgid === user); // Adjust the condition if needed
+          setCount(item?.mount || 0); // Set count from the database
+          setAvatarUrl(item?.avatar_url || "/images/DefaultAvatar.svg"); // Set avatar URL from the database
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
       }
     };
     fetchData();
@@ -106,7 +112,11 @@ function Account() {
     <>
       <div className="flex-1 h-0">
         <div className="pt-[23px] pb-[150px] px-5 text-white rounded-t-3xl border-t border-[#DFDCD5] bg-gradient-to-b from-[#FFF3D8] to-[#F8DFA6] h-full overflow-auto flex flex-col gap-4">
-          <img src="/images/john-doe.png" className="mx-auto" alt="" />
+          <img
+            src={avatarUrl}
+            className="mx-auto rounded-full border-white border-[10px]"
+            alt="User Avatar"
+          />
           <p className="font-bold text-[42px] text-center text-[#282828]">
             {user}
           </p>

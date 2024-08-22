@@ -6,7 +6,7 @@ import axios from "@/app/axios";
 
 const Topheader = () => {
   const [count, setCount] = useState<number>(0);
-  const [avatarUrl, setAvatarUrl] = useState<string>("/images/john-doe.png"); // Default avatar
+  const [avatarUrl, setAvatarUrl] = useState<string>("/images/DefaultAvatar.svg"); // Default avatar
   const user = useSelector((x: any) => x.TaskReducer.user);
 
   const getLevelInfo = () => {
@@ -91,7 +91,7 @@ const Topheader = () => {
           const { data } = await axios.get("/users");
           const item = data.find((item: any) => item.tgid === user); // Adjust the condition if needed
           setCount(item?.mount || 0); // Set count from the database
-          setAvatarUrl(item?.avatar_url || "/images/john-doe.png"); // Set avatar URL from the database
+          setAvatarUrl(item?.avatar_url || "/images/DefaultAvatar.svg"); // Set avatar URL from the database
         } catch (error) {
           console.error("Error fetching user data:", error);
         }
@@ -109,7 +109,7 @@ const Topheader = () => {
           <div className="flex gap-1">
             <img
               src={avatarUrl}
-              className="w-[50px] h-[50px]"
+              className="w-[50px] h-[50px] rounded-full border-[#CACACA] border-[3px]"
               alt="User Avatar"
             />
             <div>
