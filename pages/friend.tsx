@@ -9,6 +9,7 @@ import Topheader from "./Topheader";
 interface Item {
   t_id: string;
   mount: number;
+  avatar_url: string
 }
 
 function Friend() {
@@ -145,18 +146,29 @@ function Friend() {
         ) : (
           <div className="mb-[100px]">
             {items.map((item, index) => (
-              <div key={index}>
-                <div className="flex flex-row items-center mt-5 bg-[#F3EFE6] border border-[#DFDCD5] p-2 px-4 mx-4 rounded-lg">
-                  <div className="text-white text-lg">{index + 1}</div>
-                  <div className="ml-4 text-white">{item.t_id}</div>
-                  <img
-                    src="/images/dollar-icon.svg"
-                    alt="dollar"
-                    className="w-4 h-4 ml-6"
-                  ></img>
-                  <div className="ml-2 text-white">{item.mount}</div>
+              <div className="flex justify-between bg-white border border-[#E3E3E3] rounded-[10px] py-[10px] px-[15px]" key={index}>
+              <div className="flex items-center">
+                <img
+                  src={item.avatar_url}
+                  className="w-10 h-10 rounded-full"
+                  alt="friend-avatar"
+                ></img>
+                <p className="text-[#282828] text-[16px] font-semibold leading-4 ml-[10px]">
+                  {item.t_id}
+                </p>
+                <img src="/images/lvl-10-legendary.png" className="w-6 h-6 ml-[10px]" alt="" />
+              </div>
+              <div className="flex items-center">
+                <img
+                  src="/images/coin.png"
+                  alt="dollar"
+                  className="w-5 h-5"
+                ></img>
+                <div className="font-semibold text-[16px] text-[#282828] ml-1">
+                  {item.mount}
                 </div>
               </div>
+            </div>
             ))}
           </div>
         )}
