@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3003',
+  baseURL: 'https://chirpley-be-server-08-22.vercel.app',
 });
 
 export default axiosInstance;
