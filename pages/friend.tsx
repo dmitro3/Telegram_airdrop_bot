@@ -9,8 +9,15 @@ import Topheader from "./Topheader";
 interface Item {
   tgid: string;
   mount: number;
-  avatar_url: string
+  avatar_url: string;
 }
+
+type LevelInfo = {
+  text: string;
+  number: number;
+  image: string;
+  lvlcoin: number;
+};
 
 function Friend() {
   const user = useSelector((x: any) => x.TaskReducer.user);
@@ -18,6 +25,7 @@ function Friend() {
   const userFromQuery = router.query.user?.toString() || "";
   const [items, setItems] = useState<Item[]>([]);
   const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
@@ -53,6 +61,81 @@ function Friend() {
     });
   };
 
+  const getLevelInfo = (count: number): LevelInfo => {
+    switch (Math.floor(count / 20)) {
+      case 0:
+        return {
+          text: "Rookie",
+          number: 1,
+          image: "/images/lvl-1-rookie.png",
+          lvlcoin: 20,
+        };
+      case 1:
+        return {
+          text: "Bronze",
+          number: 2,
+          image: "/images/lvl-2-bronze.png",
+          lvlcoin: 20,
+        };
+      case 2:
+        return {
+          text: "Silver",
+          number: 3,
+          image: "/images/lvl-3-silver.png",
+          lvlcoin: 20,
+        };
+      case 3:
+        return {
+          text: "Gold",
+          number: 4,
+          image: "/images/lvl-4-gold.png",
+          lvlcoin: 20,
+        };
+      case 4:
+        return {
+          text: "Platinum",
+          number: 5,
+          image: "/images/lvl-5-platinum.png",
+          lvlcoin: 20,
+        };
+      case 5:
+        return {
+          text: "Diamond",
+          number: 6,
+          image: "/images/lvl-6-diamond.png",
+          lvlcoin: 20,
+        };
+      case 6:
+        return {
+          text: "Master",
+          number: 7,
+          image: "/images/lvl-7-master.png",
+          lvlcoin: 20,
+        };
+      case 7:
+        return {
+          text: "Grand Master",
+          number: 8,
+          image: "/images/lvl-8-grand-master.png",
+          lvlcoin: 20,
+        };
+      case 8:
+        return {
+          text: "Lord",
+          number: 9,
+          image: "/images/lvl-9-lord.png",
+          lvlcoin: 20,
+        };
+      default:
+        return {
+          text: "Legendary",
+          number: 10,
+          image: "/images/lvl-10-legendary.png",
+          lvlcoin: 20,
+        };
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col gap-5 px-5 pt-[23px] pb-[150px] rounded-t-3xl border-t border-[#DFDCD5] bg-gradient-to-b from-[#FFF3D8] to-[#F8DFA6] flex-1 h-0 overflow-auto">
@@ -63,17 +146,6 @@ function Friend() {
         <div className="font-medium text-[16px] text-center text-[#DD523A]">
           You and your friend will receive bonuses
         </div>
-        {/* <div className="flex justify-center space-x-2 mt-8">
-          <button
-            className="px-[16.5px] py-[15.5px] font-bold text-[14px] leading-[20px] bg-main text-white rounded-[12px] disabled:cursor-not-allowed"
-            onClick={handleInviteClick}
-          >
-            Invite a friend
-          </button>
-          <button className="px-[9.5px] py-[9px] bg-main rounded-[12px] disabled:cursor-not-allowed">
-            <img src="/images/copy.svg" />
-          </button>
-        </div> */}
         <div className="flex justify-between items-center bg-white border border-[#E3E3E3] rounded-[10px] p-[10px] space-x-5">
           <div className="flex items-center gap-[10px] ml-8">
             <img
@@ -146,29 +218,36 @@ function Friend() {
         ) : (
           <div className="mb-[100px]">
             {items.map((item, index) => (
-              <div className="flex justify-between bg-white border border-[#E3E3E3] rounded-[10px] py-[10px] px-[15px]" key={index}>
-              <div className="flex items-center">
-                <img
-                  src={item.avatar_url}
-                  className="w-10 h-10 rounded-full"
-                  alt="friend-avatar"
-                ></img>
-                <p className="text-[#282828] text-[16px] font-semibold leading-4 ml-[10px]">
-                  {item.tgid}
-                </p>
-                <img src="/images/lvl-10-legendary.png" className="w-6 h-6 ml-[10px]" alt="" />
-              </div>
-              <div className="flex items-center">
-                <img
-                  src="/images/coin.png"
-                  alt="dollar"
-                  className="w-5 h-5"
-                ></img>
-                <div className="font-semibold text-[16px] text-[#282828] ml-1">
-                  {item.mount}
+              <div
+                className="flex justify-between bg-white border border-[#E3E3E3] rounded-[10px] py-[10px] px-[15px]"
+                key={index}
+              >
+                <div className="flex items-center">
+                  <img
+                    src={item.avatar_url || "/images/DefaultAvatar.svg"}
+                    className="w-10 h-10 rounded-full"
+                    alt="friend-avatar"
+                  ></img>
+                  <p className="text-[#282828] text-[16px] font-semibold leading-4 ml-[10px]">
+                    {item.tgid}
+                  </p>
+                  <img
+                    src={getLevelInfo(item.mount).image}
+                    className="w-6 h-6 ml-[10px]"
+                    alt=""
+                  />
+                </div>
+                <div className="flex items-center">
+                  <img
+                    src="/images/coin.png"
+                    alt="dollar"
+                    className="w-5 h-5"
+                  ></img>
+                  <div className="font-semibold text-[16px] text-[#282828] ml-1">
+                    {item.mount}
+                  </div>
                 </div>
               </div>
-            </div>
             ))}
           </div>
         )}
