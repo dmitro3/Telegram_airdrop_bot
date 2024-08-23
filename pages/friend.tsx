@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import Topheader from "./Topheader";
 
 interface Item {
-  t_id: string;
+  tgid: string;
   mount: number;
   avatar_url: string
 }
@@ -154,7 +154,7 @@ function Friend() {
                   alt="friend-avatar"
                 ></img>
                 <p className="text-[#282828] text-[16px] font-semibold leading-4 ml-[10px]">
-                  {item.t_id}
+                  {item.tgid}
                 </p>
                 <img src="/images/lvl-10-legendary.png" className="w-6 h-6 ml-[10px]" alt="" />
               </div>
