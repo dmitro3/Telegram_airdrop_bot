@@ -5,12 +5,22 @@ import { useSelector } from "react-redux";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Topheader from "./Topheader";
+import axios from "../app/axios";
 
 import Card from "@/app/components/common/card";
 import YoutubeCard from "@/app/components/common/youtubecard";
 import Tabs from "@/app/components/tabs";
 
+interface Level {
+  level_id: number;
+  level_name: string;
+  friend_value: number;
+  premium_value: number;
+  level_avatar: string;
+}
+
 function Earn() {
+  const [levels, setLevels] = useState<Level[]>([]);
   const allTasks = useSelector((x: any) => x.TaskReducer.tasks);
   const extraTasks = allTasks?.filter((x: any) => x.extra === true);
   const router = useRouter();
@@ -25,6 +35,14 @@ function Earn() {
       setActiveTab(Number(activeTabState));
     }
   }, [activeTabState]);
+
+  useEffect(() => {
+    const fetchlevel = async () => {
+      const { data } = await axios.get("/bonuslevel");
+      setLevels(data);
+    };
+    fetchlevel();
+  }, []);
 
   const handleImageLoad = () => {};
 
@@ -221,146 +239,35 @@ function Earn() {
                 <p className="min-w-[85px] text-[#DD523A]">Premium</p>
               </div>
               <div className="flex flex-col gap-3">
-                <div className="bg-white rounded-[10px] p-[10px] text-[#282828] flex justify-between items-center">
-                  <div className="flex items-center gap-1 min-w-[137px]">
-                    <img src="/images/lvl-1-rookie.png" alt="" />
-                    <p className="font-semibold text-sm">Rookie</p>
+                {levels.map((level) => (
+                  <div
+                    key={level.level_id}
+                    className="bg-white rounded-[10px] p-[10px] text-[#282828] flex justify-between items-center"
+                  >
+                    <div className="flex items-center gap-1 min-w-[137px]">
+                      <img src={level.level_avatar} alt={level.level_name} />
+                      <p className="font-semibold text-sm">{level.level_name}</p>
+                    </div>
+                    <div className="flex gap-1">
+                      <img
+                        src="/images/coin.png"
+                        className="w-5 h-5"
+                        alt="Coin"
+                      />
+                      <p className="font-semibold">+{level.friend_value}</p>
+                    </div>
+                    <div className="flex gap-1">
+                      <img
+                        src="/images/coin.png"
+                        className="w-5 h-5"
+                        alt="Coin"
+                      />
+                      <p className="font-semibold pr-5">
+                        +{level.premium_value}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold">+20K</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold pr-5">+25K</p>
-                  </div>
-                </div>
-                <div className="bg-white rounded-[10px] p-[10px] text-[#282828] flex justify-between items-center">
-                  <div className="flex items-center gap-1 min-w-[137px]">
-                    <img src="/images/lvl-2-bronze.png" alt="" />
-                    <p className="font-semibold">Bronze</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold">+20K</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold pr-5">+25K</p>
-                  </div>
-                </div>
-                <div className="bg-white rounded-[10px] p-[10px] text-[#282828] flex justify-between items-center">
-                  <div className="flex items-center gap-1 min-w-[137px]">
-                    <img src="/images/lvl-3-silver.png" alt="" />
-                    <p className="font-semibold">Silver</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold">+20K</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold pr-5">+25K</p>
-                  </div>
-                </div>
-                <div className="bg-white rounded-[10px] p-[10px] text-[#282828] flex justify-between items-center">
-                  <div className="flex items-center gap-1 min-w-[137px]">
-                    <img src="/images/lvl-4-gold.png" alt="" />
-                    <p className="font-semibold">Gold</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold">+20K</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold pr-5">+25K</p>
-                  </div>
-                </div>
-                <div className="bg-white rounded-[10px] p-[10px] text-[#282828] flex justify-between items-center">
-                  <div className="flex items-center gap-1 min-w-[137px]">
-                    <img src="/images/lvl-5-platinum.png" alt="" />
-                    <p className="font-semibold">Platinum</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold">+20K</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold pr-5">+25K</p>
-                  </div>
-                </div>
-                <div className="bg-white rounded-[10px] p-[10px] text-[#282828] flex justify-between items-center">
-                  <div className="flex items-center gap-1 min-w-[137px]">
-                    <img src="/images/lvl-6-diamond.png" alt="" />
-                    <p className="font-semibold">Diamond</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold">+20K</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold pr-5">+25K</p>
-                  </div>
-                </div>
-                <div className="bg-white rounded-[10px] p-[10px] text-[#282828] flex justify-between items-center">
-                  <div className="flex items-center gap-1 min-w-[137px]">
-                    <img src="/images/lvl-7-master.png" alt="" />
-                    <p className="font-semibold">Master</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold">+20K</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold pr-5">+25K</p>
-                  </div>
-                </div>
-                <div className="bg-white rounded-[10px] p-[10px] text-[#282828] flex justify-between items-center">
-                  <div className="flex items-center gap-1 min-w-[137px]">
-                    <img src="/images/lvl-8-grand-master.png" alt="" />
-                    <p className="font-semibold text-sm">Grand Master</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold">+20K</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold pr-5">+25K</p>
-                  </div>
-                </div>
-                <div className="bg-white rounded-[10px] p-[10px] text-[#282828] flex justify-between items-center">
-                  <div className="flex items-center gap-1 min-w-[137px]">
-                    <img src="/images/lvl-9-lord.png" alt="" />
-                    <p className="font-semibold">Lord</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold">+20K</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold pr-5">+25K</p>
-                  </div>
-                </div>
-                <div className="bg-white rounded-[10px] p-[10px] text-[#282828] flex justify-between items-center">
-                  <div className="flex items-center gap-1 min-w-[137px]">
-                    <img src="/images/lvl-10-legendary.png" alt="" />
-                    <p className="font-semibold">Legendary</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold">+20K</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <img src="/images/coin.png" className="w-5 h-5" alt="" />
-                    <p className="font-semibold pr-5">+25K</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </>
           )}
