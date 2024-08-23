@@ -5,7 +5,8 @@ import { useSelector } from "react-redux";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Topheader from "./Topheader";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 interface Item {
   tgid: string;
   mount: number;
@@ -26,14 +27,14 @@ function Friend() {
   const [items, setItems] = useState<Item[]>([]);
   const { enqueueSnackbar } = useSnackbar();
 
+  const fetchData = async () => {
+    if (user) {
+      const response = await axios.post("/friends", { user });
+      if (response.data.items == undefined) setItems([]);
+      else setItems(response.data.items);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        const response = await axios.post("/friends", { user });
-        if (response.data.items == undefined) setItems([]);
-        else setItems(response.data.items);
-      }
-    };
     fetchData();
   }, [user]);
 
@@ -200,8 +201,14 @@ function Friend() {
         >
           More Bonuses
         </button>
-        <div className="font-medium text-black mt-[43px]">
-          List of your friends
+        <div className="font-semibold text-[#282828] mt-[43px] text-lg h-[30px] flex justify-between px-5">
+          <span className="flex items-center">List of your friends</span>
+          <button onClick={fetchData}>
+            <FontAwesomeIcon
+              icon={faArrowsRotate}
+              className="text-[30px] text-[#DD523A]"
+            />
+          </button>
         </div>
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center">
