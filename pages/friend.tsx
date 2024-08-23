@@ -220,7 +220,7 @@ function Friend() {
             {items.map((item, index) => (
               <>
                 <div
-                  className="flex justify-between bg-white border border-[#E3E3E3] rounded-[10px] py-[10px] px-[15px]"
+                  className="flex justify-between bg-white border border-[#E3E3E3] rounded-[10px] py-[10px] px-[15px] mb-[10px]"
                   key={index}
                 >
                   <div className="flex items-center">
