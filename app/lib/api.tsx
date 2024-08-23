@@ -20,3 +20,13 @@ export const getItem = async (id: string) => {
       throw error;
     }
 }
+
+export const getBonus = async (id: number) => {
+  try{
+    const response = await axios.get(`/bonusLevel/${id}`);
+    return response.data
+  } catch (error) {
+    console.error("Failed to get item", error);
+    throw error;
+  }
+}

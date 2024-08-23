@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import axios from "../app/axios";
+import { getBonus } from "@/app/lib/api";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -11,6 +12,11 @@ interface Item {
   tgid: string;
   mount: number;
   avatar_url: string;
+}
+
+type Bonus = {
+  friend_value: number;
+  premium_value: number;
 }
 
 type LevelInfo = {
@@ -25,42 +31,9 @@ function Friend() {
   const router = useRouter();
   const userFromQuery = router.query.user?.toString() || "";
   const [items, setItems] = useState<Item[]>([]);
+  const [levelbonus, setLevelbonus] = useState<Bonus[]>([]);
   const { enqueueSnackbar } = useSnackbar();
-
-  const fetchData = async () => {
-    if (user) {
-      const response = await axios.post("/friends", { user });
-      if (response.data.items == undefined) setItems([]);
-      else setItems(response.data.items);
-    }
-  };
-  useEffect(() => {
-    fetchData();
-  }, [user]);
-
-  const handleInviteClick = async () => {
-    // Generate the invite link
-    const inviteLink = `https://t.me/Chirpley_Bot?start=${user}\nPlay with me, become cryptoexchange CEO and get a token airdrop`;
-    console.log(inviteLink);
-
-    // Show the invite link in a snackbar or modal
-    enqueueSnackbar("Invite link copied to clipboard!", { variant: "success" });
-
-    // Copy the link to the clipboard
-    const shareLink = `https://t.me/share/url?url=${encodeURIComponent(
-      inviteLink
-    )}`;
-
-    // Open the share link in a new window
-    window.open(shareLink, "_blank");
-  };
-
-  const handleMoreBonusesClick = () => {
-    router.push({
-      pathname: "/earn",
-      query: { activeTabState: 1 },
-    });
-  };
+  const [count, setCount] = useState<number>(0);
 
   const getLevelInfo = (count: number): LevelInfo => {
     switch (Math.floor(count / 20)) {
@@ -137,6 +110,58 @@ function Friend() {
     }
   };
 
+  const fetchData = async () => {
+    if (user) {
+      const response = await axios.post("/friends", { user });
+      if (response.data.items == undefined) setItems([]);
+      else setItems(response.data.items);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchMount = async () => {
+      if (user) {
+        const { data } = await axios.get("/users");
+        const item = data.find((item: any) => item.tgid === user); // Adjust the condition if needed
+        setCount(item?.mount | (0 as number));
+      }
+    };
+    fetchMount();
+  }, [user]);
+
+  useEffect(() => {
+    const lvlInfo = getLevelInfo(count);
+    getBonus(lvlInfo.number).then(res => {
+      setLevelbonus(res);
+    });
+  }, [count]);
+  const handleInviteClick = async () => {
+    // Generate the invite link
+    const inviteLink = `https://t.me/Chirpley_Bot?start=${user}\nPlay with me, become cryptoexchange CEO and get a token airdrop`;
+    console.log(inviteLink);
+
+    // Show the invite link in a snackbar or modal
+    enqueueSnackbar("Invite link copied to clipboard!", { variant: "success" });
+
+    // Copy the link to the clipboard
+    const shareLink = `https://t.me/share/url?url=${encodeURIComponent(
+      inviteLink
+    )}`;
+
+    // Open the share link in a new window
+    window.open(shareLink, "_blank");
+  };
+
+  const handleMoreBonusesClick = () => {
+    router.push({
+      pathname: "/earn",
+      query: { activeTabState: 1 },
+    });
+  };
+
   return (
     <>
       <div className="flex flex-col gap-5 px-5 pt-[23px] pb-[150px] rounded-t-3xl border-t border-[#DFDCD5] bg-gradient-to-b from-[#FFF3D8] to-[#F8DFA6] flex-1 h-0 overflow-auto">
@@ -165,7 +190,7 @@ function Friend() {
                   className="w-5 h-5"
                 ></img>
                 <div className="font-semibold text-[16px] text-[#282828]">
-                  +5,000
+                  +{levelbonus[0]?.friend_value ?? 0}
                 </div>
               </div>
             </div>
@@ -189,7 +214,7 @@ function Friend() {
                   className="w-5 h-5"
                 ></img>
                 <div className="font-semibold text-[16px] text-[#282828]">
-                  +10,000
+                  +{levelbonus[0]?.premium_value ?? 0}
                 </div>
               </div>
             </div>
