@@ -249,14 +249,16 @@ function Friend() {
                     </div>
                   </div>
                 </div>
-                <button
-                  className="py-3 px-5 bg-gradient-to-b from-[#FFAB07] to-[#E76116] shadow-[0px_2px_0px_0px_#DC6E09] border border-[#FF8A00] text-white rounded-[10px] text-center"
-                  onClick={handleInviteClick}
-                >
-                  Invite a friend
-                </button>
               </>
             ))}
+            <div className="flex justify-center mt-[10px]">
+              <button
+                className="py-3 px-5 bg-gradient-to-b from-[#FFAB07] to-[#E76116] shadow-[0px_2px_0px_0px_#DC6E09] border border-[#FF8A00] text-white rounded-[10px] text-center"
+                onClick={handleInviteClick}
+              >
+                Invite a friend
+              </button>
+            </div>
           </div>
         )}
       </div>
